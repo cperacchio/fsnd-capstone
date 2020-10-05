@@ -3,7 +3,8 @@ from flask_sqlalchemy import SQLAlchemy
 import json
 import os
 
-database_path = os.environ['postgres://claireperacchio@localhost:5432/capstone']
+os.environ['DB_CONN'] = 'postgres://claireperacchio@localhost:5432/capstone'
+database_path = os.environ['DB_CONN']
 
 db = SQLAlchemy()
 
