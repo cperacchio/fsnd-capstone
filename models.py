@@ -24,19 +24,41 @@ def setup_db(app, database_path=database_path):
 Classes
 Have title and release year
 '''
-# class Person(db.Model):  
-#   __tablename__ = 'People'
+class Movie(db.Model):  
+  __tablename__ = 'Movie'
 
-#   id = Column(Integer, primary_key=True)
-#   name = Column(String)
-#   catchphrase = Column(String)
+  id = db.Column(db.Integer, primary_key=True)
+  title = db.Column(db.String(120), nullable=False)
+  release_year = db.Column(db.Integer, nullable=False)
+  rating = db.Column(db.String(120), nullable=False)
+  run_time = db.Column(db.Integer, nullable=False)
+  box_office = db.Column(db.Integer, nullable=False)
+  actors = db.relationship('Actor', backref='movie')
+  director = db.relationship('Director', backref='movie')
 
-#   def __init__(self, name, catchphrase=""):
-#     self.name = name
-#     self.catchphrase = catchphrase
+  def __repr__(self):
+    return f'<Movie {self.id} {self.title}>'
 
-#   def format(self):
-#     return {
-#       'id': self.id,
-#       'name': self.name,
-#       'catchphrase': self.catchphrase}
+class Actor(db.Model):
+  __tablename__ = 'Actor'
+
+  id = db.Column(db.Integer, primary_key=True)
+  name = db.Column(db.String(120), nullable=False)
+  age = db.Column(db.Integer, nullable=False)
+  gender = db.Column(db.Char(1), nullable=False)
+  movie_id = Column(Integer, ForeignKey('movie.id'))
+
+  def __repr__(self):
+    return f'<Actor {self.id} {self.name}>'
+
+class Director(db.Model):
+  __tablename__ = 'Director'
+
+  id = db.Column(db.Integer, primary_key=True)
+  name = db.Column(db.String(120), nullable=False)
+  age = db.Column(db.Integer, nullable=False)
+  gender = db.Column(db.Char(1), nullable=False)
+  movie_id = Column(Integer, ForeignKey('movie.id'))
+
+  def __repr__(self):
+    return f'<Director {self.id} {self.name}>'
