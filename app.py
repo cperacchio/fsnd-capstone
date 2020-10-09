@@ -2,10 +2,12 @@
 # Imports
 #----------------------------------------------------------------------------#
 import os
-from flask import Flask, request, abort, jsonify
+from flask import Flask, request, abort, jsonify, render_template, session
 from flask_sqlalchemy import SQLAlchemy
-from flask_cors import CORS
-from models import setup_db
+from flask_cors import CORS, cross_origin
+from models import setup_db, Movie, Actor
+#from auth.auth import AuthError, requires_auth
+from forms import MovieForm, ActorForm
 
 #----------------------------------------------------------------------------#
 # Initialize App 
@@ -53,7 +55,7 @@ def create_movie():
       box_office = request.form.get('box_office'),
       actors = request.form.getlist('actors')
     )
-    db.session.add(venue)
+    db.session.add(movie)
     db.session.commit()
 
   except Exception as e:
@@ -113,32 +115,6 @@ def delete_actor(actor_id):
   except:
     db.session.rollback()
     flash('An error occurred. Actor ' + request.form['name'] + ' could not be deleted.')
-  finally:
-    db.session.close()
-
-  return render_template('pages/home.html')
-
-#  Directors
-#  ----------------------------------------------------------------
-@app.route('/directors')
-def directors():
-	directors = Director.query.all()
-
-# route handler to delete directors
-@app.route('/directors/<director_id>', methods=['DELETE'])
-def delete_director(director_id):
-  try:
-    # get movie to delete
-    director = Director.query.get(director_id) 
-    db.session.delete(director)
-    db.session.commit()
-
-    # on successful db delete, flash success
-    flash('Director ' + request.form['name'] + ' was successfully deleted!')
-
-  except:
-    db.session.rollback()
-    flash('An error occurred. Director ' + request.form['name'] + ' could not be deleted.')
   finally:
     db.session.close()
 

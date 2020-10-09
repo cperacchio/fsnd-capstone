@@ -31,12 +31,6 @@ actor_movie = db.Table('actor_movie',
     Column('actor_id', db.Integer, db.ForeignKey('actor.id'))
 )
 
-director_movie = db.Table('director_movie',
-    Column('id', db.Integer, primary_key=True),
-    Column('movie_id', db.Integer, db.ForeignKey('movie.id')),
-    Column('director_id', db.Integer, db.ForeignKey('director.id'))
-)
-
 class Movie(db.Model):  
   __tablename__ = 'Movie'
 
@@ -46,8 +40,8 @@ class Movie(db.Model):
   rating = db.Column(db.String(120), nullable=False)
   box_office = db.Column(db.Integer, nullable=False)
   image_link = db.Column(db.String(500))
-  cast = db.relationship('Actor', secondary=actor_movie, back_populates='movies', cascade='save-update, merge', lazy='dynamic')
-  director = db.relationship('Director', secondary=director_movie, back_populates='movies', cascade='save-update, merge', lazy='dynamic')
+  director = db.Column(db.String(120))
+  actors = relationship('Actor', secondary=actor_movie)
 
   def __init__(self, name, release_year, rating, box_office, image_link, director):
         self.name = name
@@ -105,62 +99,7 @@ class Actor(db.Model):
   age = db.Column(db.Integer, nullable=False)
   gender = db.Column(db.String(1), nullable=False)
   image_link = db.Column(db.String(500))
-  movies = db.relationship('Movie', secondary=actor_movie, lazy='joined')
-
-  def __init__(self, name, age, gender, image_link):
-        self.name = name
-        self.age = age
-        self.gender = gender
-        self.image_link = image_link
-        
-  def insert(self):
-    try:
-      db.session.add(self)
-      db.session.commit()
-    except: 
-      db.session.rollback()
-      print(sys.exc_info())
-  
-  def update(self):
-    try:
-      db.session.commit()
-    except: 
-      db.session.rollback()
-      print(sys.exc_info())
-
-  def delete(self):
-    try:
-      db.session.delete(self)
-      db.session.commit()
-    except: 
-      db.session.rollback()
-      print(sys.exc_info())
-
-  def format(self):
-      return {
-          'name': self.name,
-          'id': self.id,
-          'age': self.age,
-          'gender': self.gender,
-          'movies': [movie.format_with_no_cast() for movie in self.movies]
-      }
-
-  def format_no_movies(self):
-      return {
-          'name': self.name,
-          'age': self.age,
-          'gender': self.gender,
-      }
-
-class Director(db.Model):
-  __tablename__ = 'Director'
-
-  id = db.Column(db.Integer, primary_key=True)
-  name = db.Column(db.String(120), nullable=False)
-  age = db.Column(db.Integer, nullable=False)
-  gender = db.Column(db.String(1), nullable=False)
-  image_link = db.Column(db.String(500))
-  movies = db.relationship('Movie', secondary=director_movie, lazy='joined')
+  movies = db.relationship('Movie', secondary=actor_movie)
 
   def __init__(self, name, age, gender, image_link):
         self.name = name
