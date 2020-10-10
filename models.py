@@ -27,8 +27,8 @@ Models
 
 actor_movie = db.Table('actor_movie',
     Column('id', db.Integer, primary_key=True),
-    Column('movie_id', db.Integer, db.ForeignKey('movie.id')),
-    Column('actor_id', db.Integer, db.ForeignKey('actor.id'))
+    Column('movie_id', db.Integer, db.ForeignKey('Movie.id')),
+    Column('actor_id', db.Integer, db.ForeignKey('Actor.id'))
 )
 
 class Movie(db.Model):  
