@@ -1,6 +1,7 @@
 import os
 from sqlalchemy import Column, String, Integer, ForeignKey, Boolean, create_engine
 from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 from sqlalchemy.orm import relationship, sessionmaker
 import json, sys
 
@@ -36,20 +37,18 @@ class Movie(db.Model):
 
   id = db.Column(db.Integer, primary_key=True)
   name = db.Column(db.String(120), nullable=False)
-  release_year = db.Column(db.Integer, nullable=False)
-  rating = db.Column(db.String(120), nullable=False)
-  box_office = db.Column(db.Integer, nullable=False)
-  image_link = db.Column(db.String(500))
   director = db.Column(db.String(120))
+  genre = db.Column(db.String(120), nullable=False)
+  release_year = db.Column(db.Integer)
+  rating = db.Column(db.String(120))
   actors = relationship('Actor', secondary=actor_movie)
 
-  def __init__(self, name, release_year, rating, box_office, image_link, director):
+  def __init__(self, name, director, genre, release_year, rating):
         self.name = name
+        self.director = director
+        self.genre = genre
         self.release_year = release_year
         self.rating = rating
-        self.box_office = box_office
-        self.image_link = image_link
-        self.director = director
 
   def insert(self):
     try:
@@ -77,18 +76,23 @@ class Movie(db.Model):
 
   def format(self):
       return {
-          'name': self.name,
           'id': self.id,
+          'name': self.name,
+          'director': self.director,
+          'genre': self.genre,
           'release_year': self.release_year,
-          'cast': [actor.format_no_movies() for actor in self.cast],
-          'director': self.director
+          'rating': self.rating,
+          'cast': [actor.format_no_movies() for actor in self.cast]
       }
 
   def format_with_no_cast(self):
       return {
+          'id': self.id,
           'name': self.name,
+          'director': self.director,
+          'genre': self.genre,
           'release_year': self.release_year,
-          'director': self.director
+          'rating': self.rating
       }
 
 class Actor(db.Model):
@@ -136,12 +140,12 @@ class Actor(db.Model):
           'id': self.id,
           'age': self.age,
           'gender': self.gender,
-          'movies': [movie.format_with_no_cast() for movie in self.movies]
+          'movies': [actor.format_with_no_movies() for actor in self.cast]
       }
 
   def format_no_movies(self):
       return {
           'name': self.name,
           'age': self.age,
-          'gender': self.gender,
+          'gender': self.gender
       }

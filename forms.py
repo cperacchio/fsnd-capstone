@@ -7,26 +7,36 @@ class MovieForm(Form):
     name = StringField(
         'name', validators=[DataRequired()]
     )
+    director = StringField(
+        'director'
+    )
+    genre = SelectField(
+        'genre', validators=[DataRequired()],
+        choices=[
+            ('Action', 'Action'),
+            ('Animated', 'Animated'),
+            ('Comedy', 'Comedy'),
+            ('Drama', 'Drama'),
+            ('Fantasy', 'Fantasy'),
+            ('Horror', 'Horror'),
+            ('Indie', 'Indie'),
+            ('Musical', 'Musical'),
+            ('Romance', 'Romance'),
+            ('Sci-Fi', 'Sci-Fi'),
+            ('Thriller', 'Thriller')
+        ]
+    )
     release_year = StringField(
-        'release_year', validators=[DataRequired()]
+        'release_year'
     )
     rating = SelectField(
-        'rating', validators=[DataRequired()],
+        'rating',
         choices=[
             ('G', 'G'),
             ('PG', 'PG'),
             ('PG-13', 'PG-13'),
             ('R', 'R')
         ]
-    )
-    box_office = StringField(
-        'box_office', validators=[DataRequired()]
-    )
-    image_link = StringField(
-        'image_link'
-    )
-    director = StringField(
-        'director'
     )
 
 class ActorForm(Form):

@@ -1,0 +1,25 @@
+{% extends 'layouts/main.html' %}
+{% block title %}Casting Agency{% endblock %}
+{% block content %}
+<div class="row">
+	<div class="col-sm-6">
+		<h1>Casting Agency 🔥</h1>
+		<p class="lead">Where actors meet your next movie project.</p>
+		<h3>
+			<a href="/movies"><button class="btn btn-primary btn-lg">Find a movie</button></a>
+			<a href="/movies/create"><button class="btn btn-default btn-lg">Create a movie project</button></a>
+		</h3>
+		<h3>
+			<a href="/actors"><button class="btn btn-primary btn-lg">Find an actor</button></a>
+			<a href="/actors/create"><button class="btn btn-default btn-lg">Create an actor profile</button></a>
+		</h3>
+		<p class="lead">Find the right co-star for your next movie.</p>
+		<h3>
+			<a href="/cast/create"><button class="btn btn-default btn-lg">Cast a movie</button></a>
+		</h3>
+	</div>
+	<div class="col-sm-6 hidden-sm hidden-xs">
+		<img id="front-splash" src="{{ url_for('static',filename='img/front-splash.jpg') }}" alt="Front Photo of Musical Band" />
+	</div>
+</div>
+{% endblock %}

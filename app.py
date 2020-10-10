@@ -59,11 +59,10 @@ def create_movie():
     # add user-submitted data and commit to db
     movie = Movie(
       name = request.form.get('name'),
+      director = request.form.get('director'),
+      genre = request.form.get('genre'),
       release_year = request.form.get('release_year'),
       rating = request.form.get('rating'),
-      box_office = request.form.get('box_office'),
-      image_link = request.form.get('image_link'),
-      director = request.form.get('director'),
       actors = request.form.getlist('actors')
     )
     db.session.add(movie)
@@ -241,6 +240,43 @@ def delete_actor(actor_id):
     db.session.close()
 
   return render_template('pages/home.html')
+
+#  Cast a Movie
+#  ----------------------------------------------------------------
+# route handler to get to form to cast a movie
+@app.route('/cast/create', methods=['GET'])
+def create_cast_form():				
+	movies = Movie.query.all()
+	actors = Actor.query.all()		
+
+	return render_template('forms/new_cast.html', movies=movies, actors=actors), 200
+
+# route handler to cast a movie in db
+@app.route('/cast/create', methods=['POST'])
+def create_cast():
+	error = False
+	actor_id = request.form.get('actor_id')
+	movie_id = request.form.get('movie_id')
+
+	try:
+		movie = Movie.query.get(movie_id)
+		actor = Movie.query.get(actor_id)
+
+		if movie is None or actor is None:
+			abort(404)
+			flash('Error: Please check your inputs')
+
+		movie.cast.append(actor)
+		movie.update()
+
+		# success message upon succeesful casting
+		flash(request.form['name'] + ' was successfully cast!')
+
+	except:
+		error = True
+		flash('Error: Actor ' + request.form['name'] + ' was not cast. Please check your inputs and try again :)')
+
+	return render_template('pages/home.html')
 
 #----------------------------------------------------------------------------#
 # Launch App
