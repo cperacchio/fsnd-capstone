@@ -53,7 +53,7 @@ def get_movies():
 			"rating": movie.rating
 			})
 
-	return json.dumps({
+		return json.dumps({
 			'success': True,
 		}), 200
 
