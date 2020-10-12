@@ -6,13 +6,21 @@
       <h3 class="form-heading">Cast a movie</h3>
       <div class="form-group">
         <label for="actor">Actor</label>
-        {{ form.actor(class_ = 'form-control', name ='actor_id') }}
+        <select class="form-control" name="actor_id">
+          {%for actor in actors %}
+          <option value="{{actor.id}}"> {{actor.name}}</option>
+          {% endfor %}
+        </select>
       </div>
       <div class="form-group">
-          <label for="movie">Movie</label>
-          {{ form.movie(class_ = 'form-control', name ='movie_id') }}
-        </div>
-      <input type="submit" value="Cast actor" class="btn btn-primary btn-lg btn-block">
+        <label for="movie">Movie</label>
+        <select class="form-control" name="movie_id">
+          {%for movie in movies %}
+          <option value="{{movie.id}}"> {{movie.name}}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <input type="submit" value="Book actor" class="btn btn-primary btn-lg btn-block">
     </form>
   </div>
 {% endblock %}
