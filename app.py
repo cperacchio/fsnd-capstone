@@ -6,6 +6,7 @@ from flask import Flask, request, abort, jsonify, render_template, session, flas
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS, cross_origin
 from models import setup_db, Movie, Actor
+import simplejson as json
 #from auth.auth import AuthError, requires_auth
 from forms import MovieForm, ActorForm
 
@@ -52,7 +53,11 @@ def get_movies():
 			"rating": movie.rating
 			})
 
-	return render_template('pages/movies.html', movies=movies_data)
+	return json.dumps({
+			'success': True,
+		}), 200
+
+	#render_template('pages/movies.html', movies=movies_data)
 
 # route handler to get to form to create a new movie
 @app.route('/movies/create', methods=['GET'])
@@ -77,23 +82,29 @@ def create_movie():
 	try:
 		movie.insert()
 		#db.session.commit()
+		return json.dumps({
+			'success': True,
+		}), 200
 
-	except Exception as e:
-		error = True
+	except:
+		return json.dumps({
+			'success': False,
+			'error': 'An error occurred'
+		}), 400
 		#db.session.rollback()
 		#print(sys.exc_info())
 		
 	#finally:
 		#db.session.close()
 	  
-	if error:
-		# On unsuccessful db insert, flash an error
-		flash('Error: Movie ' + request.form['name'] + ' was not listed. Please check your inputs and try again :)')
-	else:
-		# On successful db insert, flash success
-		flash(request.form['name'] + ' was successfully listed!')
+	# if error:
+	# 	# On unsuccessful db insert, flash an error
+	# 	flash('Error: Movie ' + request.form['name'] + ' was not listed. Please check your inputs and try again :)')
+	# else:
+	# 	# On successful db insert, flash success
+	# 	flash(request.form['name'] + ' was successfully listed!')
 
-	return render_template('pages/home.html')
+	# return render_template('pages/home.html')
 
 # route handler to update movie records
 @app.route('/movies/<id>', methods=['PATCH'])
