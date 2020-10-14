@@ -53,11 +53,7 @@ def get_movies():
 			"rating": movie.rating
 			})
 
-		return json.dumps({
-			'success': True,
-		}), 200
-
-	#render_template('pages/movies.html', movies=movies_data)
+	return render_template('pages/movies.html', movies=movies_data), 200
 
 # route handler to get to form to create a new movie
 @app.route('/movies/create', methods=['GET'])
@@ -80,34 +76,64 @@ def create_movie():
 		rating = request.form.get('rating')
 	)
 	try:
+		#db.session.add(movie)
 		movie.insert()
 		#db.session.commit()
-		return json.dumps({
-			'success': True,
-		}), 200
 
 	except:
-		return json.dumps({
-			'success': False,
-			'error': 'An error occurred'
-		}), 400
+		error = True
 		#db.session.rollback()
 		#print(sys.exc_info())
-		
-	#finally:
-		#db.session.close()
+	
+	# finally:
+	# 	db.session.close()
 	  
-	# if error:
-	# 	# On unsuccessful db insert, flash an error
-	# 	flash('Error: Movie ' + request.form['name'] + ' was not listed. Please check your inputs and try again :)')
-	# else:
-	# 	# On successful db insert, flash success
-	# 	flash(request.form['name'] + ' was successfully listed!')
+	if error:
+		#On unsuccessful db insert, flash an error
+		flash('Error: Movie ' + request.form['name'] + ' was not listed. Please check your inputs and try again :)')
+	else:
+		# On successful db insert, flash success
+		flash(request.form['name'] + ' was successfully listed!')
 
-	# return render_template('pages/home.html')
+	return render_template('pages/home.html')
+
+# route handler to get individual movie records
+@app.route('/movies/<int:movie_id>', methods=['GET'])
+def get_movie_details():
+	movie = Movie.query.get(movie_id)
+
+	if movie is None:
+		return json.dumps({
+			'success': False,
+			'error': 'Movie could not be found'
+		}), 404
+
+	cast = movie.cast
+	cast_details = []
+
+	for actor in cast:
+		cast_details.append({
+			"id": actor.id,
+			"name": actor.name,
+			"age": actor.age,
+			"gender": actor.gender,
+			"image_link": actor.image_link
+			})
+
+	movie_details = {
+		"id": movie.id,
+		"name": movie.name,
+		"director": movie.director,
+		"genre": movie.genre,
+		"release_year": movie.release_year,
+		"rating": movie.rating,
+		"cast": cast_details	
+	}
+
+	return render_template('pages/show_movie.html', movie=movie_details)
 
 # route handler to update movie records
-@app.route('/movies/<id>', methods=['PATCH'])
+@app.route('/movies/<int:movie_id>', methods=['PATCH'])
 def update_movie(*args, **kwargs):
 	# get movie based on id
 	id = kwargs['id']
@@ -142,7 +168,7 @@ def update_movie(*args, **kwargs):
 
 
 # route handler to delete movies
-@app.route('/movies/<movie_id>', methods=['DELETE'])
+@app.route('/movies/<int:movie_id>', methods=['DELETE'])
 def delete_movie(movie_id):
 	try:
 		# get movie to delete
@@ -194,8 +220,8 @@ def create_actor():
 	# add user-submitted data and commit to db
 	actor = Actor(
 		name = request.form.get('name'),
-		age = request.form.get('release_year'),
-		gender = request.form.get('rating'),
+		age = request.form.get('age'),
+		gender = request.form.get('gender'),
 		image_link = request.form.get('image_link')
 	)
 	try:
@@ -222,7 +248,7 @@ def create_actor():
 	return render_template('pages/home.html')
 
 # route handler to update actor records
-@app.route('/actors/<id>', methods=['PATCH'])
+@app.route('/actors/<int:actor_id>', methods=['PATCH'])
 def update_actor(*args, **kwargs):
 	# get movie based on id
 	id = kwargs['id']
@@ -256,7 +282,7 @@ def update_actor(*args, **kwargs):
 		}), 400
 
 # route handler to delete actors
-@app.route('/actors/<actor_id>', methods=['DELETE'])
+@app.route('/actors/<int:actor_id>', methods=['DELETE'])
 def delete_actor(actor_id):
 	try:
 		# get movie to delete
@@ -298,18 +324,22 @@ def create_cast():
 		actor = Movie.query.get(actor_id)
 
 		if movie is None or actor is None:
-			abort(404)
-			flash('Error: Please check your inputs')
+			return json.dumps({
+				'success': False,
+			}), 400
 
 		movie.cast.append(actor)
 		movie.update()
 
-		# success message upon succeesful casting
-		flash(request.form['name'] + ' was successfully cast!')
-
 	except:
 		error = True
-		flash('Error: Actor ' + request.form['name'] + ' was not cast. Please check your inputs and try again :)')
+	
+	if error:
+		flash('Error: This actor was not cast. Please check your inputs and try again :)')
+
+	else: 
+		# success message upon succeesful casting
+		flash('This actor was successfully cast!')
 
 	return render_template('pages/home.html')
 
