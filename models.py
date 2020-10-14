@@ -80,10 +80,10 @@ class Movie(db.Model):
 		  	'genre': self.genre,
 		  	'release_year': self.release_year,
 		  	'rating': self.rating,
-		  	'cast': [actor.format_no_movies() for actor in self.cast]
+		  	'cast': [actor.format() for actor in self.cast]
 	  	}
 
-	def format_with_no_cast(self):
+	def format_no_cast(self):
 		return {
 	  		'id': self.id,
 		  	'name': self.name,
@@ -98,8 +98,8 @@ class Actor(db.Model):
 
 	id = db.Column(db.Integer, primary_key=True)
 	name = db.Column(db.String(120), nullable=False)
-	age = db.Column(db.Integer, nullable=False)
-	gender = db.Column(db.String(1), nullable=False)
+	age = db.Column(db.Integer(), nullable=False)
+	gender = db.Column(db.String(120), nullable=False)
 	image_link = db.Column(db.String(500))
 	movies = db.relationship('Movie', secondary=actor_movie)
 
@@ -138,12 +138,13 @@ class Actor(db.Model):
 			'id': self.id,
 			'age': self.age,
 			'gender': self.gender,
-			'movies': [actor.format_with_no_movies() for actor in self.cast]
+			'movies': [movie.format() for movie in self.movies]
 		}
 
 	def format_no_movies(self):
 	  	return {
 		  	'name': self.name,
+		  	'id': self.id,
 		  	'age': self.age,
 		  	'gender': self.gender
 	  	}

@@ -1,6 +1,6 @@
 from datetime import datetime
 from flask_wtf import Form
-from wtforms import StringField, SelectField, SelectMultipleField, DateTimeField
+from wtforms import StringField, SelectField, SelectMultipleField, DateTimeField, IntegerField
 from wtforms.validators import DataRequired, AnyOf, URL
 
 class MovieForm(Form):
@@ -43,7 +43,7 @@ class ActorForm(Form):
     name = StringField(
         'name', validators=[DataRequired()]
     )
-    age = StringField(
+    age = IntegerField(
         'age', validators=[DataRequired()]
     )
     gender = SelectField(
