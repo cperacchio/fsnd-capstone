@@ -37,7 +37,16 @@
 	<section>
 		<div class = "row">
 		<div class="col-sm-6">
-			<button><a href="/movies/{{ movie.id }}/patch">Edit project</a></button> <button><a href="/movies/{{ movie.id }}/delete">Delete project</a> </button>
+			<button>
+	  			<a href="{{ url_for('update_movie', movie_id=movie.id) }}">
+	    		Edit project
+	  			</a>
+			</button> 
+			<button>
+	  			<a href="{{ url_for('delete_movie', movie_id=movie.id) }}">
+	    		Delete project
+	  			</a>
+			</button>
 		</div>
 		</div>
 	</section>
