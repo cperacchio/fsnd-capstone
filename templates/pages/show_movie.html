@@ -10,51 +10,37 @@
 			ID: {{ movie.id }}
 		</p>
 		<div class="director">
-			{% for director in movie.director %}
-			<span class="director">{{ director }}</span>
+			<span class="director">{{ movie.director }}</span>
 		</div>
 		<div class="genre">
-			{% for genre in movie.genre %}
-			<span class="genre">{{ genre }}</span>
-			{% endfor %}
+			<span class="genre">{{ movie.genre }}</span>
 		</div>
 		<p>
 			<i class="fas fa-globe-americas"></i> {{ movie.release_year }}
 		</p>
-		<div class="rating">
-			{% for rating in movie.rating %}
-			<span class="rating">{{ rating }}</span>
-			{% endfor %}
-		</div>
-	</div>>
-</div>>
-		<section>
+		<div class="rating"> {{ movie.rating }} </div>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-sm-6">
 		<h2 class="monospace">Movie cast</h2>
 		{% for actor in movie.cast %}
-		<div class="col-sm-6">
 		<div class="cast">
-			<div class="image">
-				<img src="{{ actor.image_link }}" alt="Actor image" />
-			</div>
-			<div>
-				<a href="/actors/{{actor.id}}">{{actor.name}}</a>>
-			</div>
-			<div>
-				{{actor.age}}
-			</div>
-			<div>
-				{{actor.gender}}
-			</div>
-		{% endfor %}
+			<h3><a href="/actors/{{actor.id}}">{{actor.name}}</a></h3>
 		</div>
-		</div>	
-		</section>
+		{% endfor %}
+	</div>
+</div>
 
-		<section>
-			<div class = "row">
-				<button><a href="/movies/{{movie.id}}/patch">Edit project</a>></button> <button><a href="/movies/{{movie.id}}/delete">Delete project</a> </button>
-			</div>
-		</section>
+
+	<section>
+		<div class = "row">
+		<div class="col-sm-6">
+			<button><a href="/movies/{{ movie.id }}/patch">Edit project</a></button> <button><a href="/movies/{{ movie.id }}/delete">Delete project</a> </button>
+		</div>
+		</div>
+	</section>
 
 {% endblock %}
 

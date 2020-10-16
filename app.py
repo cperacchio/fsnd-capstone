@@ -26,6 +26,12 @@ def create_app(test_config=None):
 
 app = create_app()
 
+@app.after_request
+def after_request(response):
+	response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization,true')
+	response.headers.add('Access-Control-Allow-Methods', 'GET,PATCH,POST,DELETE,OPTIONS')
+	return response
+
 #----------------------------------------------------------------------------#
 # Controllers.
 #----------------------------------------------------------------------------#
@@ -168,23 +174,28 @@ def update_movie(*args, **kwargs):
 
 
 # route handler to delete movies
-@app.route('/movies/<int:movie_id>', methods=['DELETE'])
+@app.route('/movies/<int:movie_id>/delete', methods=['DELETE'])
 def delete_movie(movie_id):
+	# get movie to delete
+	movie = Movie.query.get(movie_id) 
+	error = False
+	
+	if movie is None:
+		return json.dumps({
+			'success': False,
+			'error': 'Movie could not be found'
+		}), 404
+
 	try:
-		# get movie to delete
-		movie = Movie.query.get(movie_id) 
-		db.session.delete(movie)
-		db.session.commit()
+		movie.delete()
 
 		# on successful db delete, flash success
 		flash('Movie ' + request.form['title'] + ' was successfully deleted!')
 
 	except:
-		db.session.rollback()
+		error = True
 		flash('An error occurred. This movie ' + request.form['title'] + ' could not be deleted.')
-	finally:
-		db.session.close()
-
+	
 	return render_template('pages/home.html')
 
 #  Actors
