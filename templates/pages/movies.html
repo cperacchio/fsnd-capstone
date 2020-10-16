@@ -1,19 +1,14 @@
 {% extends 'layouts/main.html' %}
-{% block title %}Fyyur | Venues{% endblock %}
+{% block title %}Casting Agency | Movies{% endblock %}
 {% block content %}
-{% for area in areas %}
-<h3>{{ area.city }}, {{ area.state }}</h3>
-	<ul class="items">
-		{% for venue in area.venues %}
-		<li>
-			<a href="/venues/{{ venue.id }}">
-				<i class="fas fa-music"></i>
-				<div class="item">
-					<h5>{{ venue.name }}</h5>
-				</div>
-			</a>
-		</li>
-		{% endfor %}
-	</ul>
-{% endfor %}
+<ul class="items">
+	{% for movie in movies %}
+	<li>
+		<a href="/movies/{{ movie.id }}">
+			<h3>{{ movie.name }}</h3>
+			<i class="fas fa-music"></i>
+		</a>
+	</li>
+	{% endfor %}
+</ul>
 {% endblock %}

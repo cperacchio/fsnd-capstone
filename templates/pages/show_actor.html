@@ -1,0 +1,26 @@
+{% extends 'layouts/main.html' %}
+{% block title %}{{ actor.name }} | Actor{% endblock %}
+{% block content %}
+<div class="row">
+	<div class="col-sm-6">
+		<h1 class="monospace">
+			{{ actor.name }}
+		</h1>
+		<p class="subtitle">
+			ID: {{ actor.id }}
+		</p>
+		<div class="age">
+			<span class="age">{{ actor.age }}</span>	
+		</div>
+		<div class="gender">
+			<span class="gender">{{ actor.gender }}</span>
+		</div>
+	<div class="col-sm-6">
+		<img src="{{ actor.image_link }}" alt="Actor Image" />
+	</div>
+</div>
+</div>
+</section>
+
+{% endblock %}
+

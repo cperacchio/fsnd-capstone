@@ -1,13 +1,13 @@
 {% extends 'layouts/main.html' %}
-{% block title %}Fyyur | Artists{% endblock %}
+{% block title %}Casting Agency | Actors{% endblock %}
 {% block content %}
 <ul class="items">
-	{% for artist in artists %}
+	{% for actor in actors %}
 	<li>
-		<a href="/artists/{{ artist.id }}">
+		<a href="/actors/{{ actor.id }}">
 			<i class="fas fa-users"></i>
 			<div class="item">
-				<h5>{{ artist.name }}</h5>
+				<h5>{{ actor.name }}</h5>
 			</div>
 		</a>
 	</li>

@@ -99,7 +99,7 @@ def create_movie():
 
 # route handler to get individual movie records
 @app.route('/movies/<int:movie_id>', methods=['GET'])
-def get_movie_details():
+def get_movie_details(movie_id):
 	movie = Movie.query.get(movie_id)
 
 	if movie is None:
@@ -247,6 +247,27 @@ def create_actor():
 
 	return render_template('pages/home.html')
 
+# route handler to get individual actor records
+@app.route('/actors/<int:actor_id>', methods=['GET'])
+def get_actor_details(actor_id):
+	actor = Actor.query.get(actor_id)
+
+	if actor is None:
+		return json.dumps({
+			'success': False,
+			'error': 'Actor could not be found'
+		}), 404
+
+	actor_details = ({
+		"id": actor.id,
+		"name": actor.name,
+		"age": actor.age,
+		"gender": actor.gender,
+		"image_link": actor.image_link
+	})
+
+	return render_template('pages/show_actor.html', actor=actor_details)
+
 # route handler to update actor records
 @app.route('/actors/<int:actor_id>', methods=['PATCH'])
 def update_actor(*args, **kwargs):
@@ -339,7 +360,7 @@ def create_cast():
 
 	else: 
 		# success message upon succeesful casting
-		flash('This actor was successfully cast!')
+		flash('This actor was successfully booked!')
 
 	return render_template('pages/home.html')
 
