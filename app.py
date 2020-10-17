@@ -7,7 +7,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS, cross_origin
 from models import setup_db, Movie, Actor
 import simplejson as json
-#from auth.auth import AuthError, requires_auth
+from auth.auth import requires_auth, AuthError
 from forms import MovieForm, ActorForm
 
 SECRET_KEY = os.urandom(32)
@@ -26,18 +26,29 @@ def create_app(test_config=None):
 
 app = create_app()
 
+#----------------------------------------------------------------------------#
+# Controllers.
+#----------------------------------------------------------------------------#
+
 @app.after_request
 def after_request(response):
 	response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization,true')
 	response.headers.add('Access-Control-Allow-Methods', 'GET,PATCH,POST,DELETE,OPTIONS')
 	return response
 
-#----------------------------------------------------------------------------#
-# Controllers.
-#----------------------------------------------------------------------------#
+# route handler to log in
+@app.route('/login', methods= ['GET'])
+@cross_origin()
+def log_in():
+	login = requests.get('https://fsnd79.auth0.com/authorize?audience=casting@response_type=token&client_id=2FaJjQSAtsiLqHMEfNlS0ThYQ6Oyuh9c&redirect_uri=http://localhost:8100/')
+
+	return json.dumps({
+		'success': True,
+	}), 200
 
 # route handler for home page
 @app.route('/')
+@cross_origin()
 def index():
 	return render_template('pages/home.html')
 
@@ -45,7 +56,9 @@ def index():
 #  ----------------------------------------------------------------
 # route handler to get list of movies
 @app.route('/movies', methods = ['GET'])
-def get_movies():
+@cross_origin()
+@requires_auth('get:movies')
+def get_movies(jwt):
 	movies = Movie.query.all()
 
 	movies_data = []
@@ -63,14 +76,16 @@ def get_movies():
 
 # route handler to get to form to create a new movie
 @app.route('/movies/create', methods=['GET'])
-def create_movie_form():
+@requires_auth('get:movieform')
+def create_movie_form(jwt):
 	form = MovieForm()
 	
 	return render_template('forms/new_movie.html', form=form)
 
 # route handler to create a movie record in db
 @app.route('/movies/create', methods=['POST'])
-def create_movie():
+@requires_auth('post:movies')
+def create_movie(jwt):
 	# catch errors with try/except
 	error = False
 	# add user-submitted data and commit to db
@@ -82,17 +97,10 @@ def create_movie():
 		rating = request.form.get('rating')
 	)
 	try:
-		#db.session.add(movie)
 		movie.insert()
-		#db.session.commit()
 
 	except:
 		error = True
-		#db.session.rollback()
-		#print(sys.exc_info())
-	
-	# finally:
-	# 	db.session.close()
 	  
 	if error:
 		#On unsuccessful db insert, flash an error
@@ -105,7 +113,8 @@ def create_movie():
 
 # route handler to get individual movie records
 @app.route('/movies/<int:movie_id>', methods=['GET'])
-def get_movie_details(movie_id):
+@requires_auth('get:movies')
+def get_movie_details(movie_id, jwt):
 	movie = Movie.query.get(movie_id)
 
 	if movie is None:
@@ -138,12 +147,12 @@ def get_movie_details(movie_id):
 
 	return render_template('pages/show_movie.html', movie=movie_details)
 
-# route handler to update movie records
-@app.route('/movies/<int:movie_id>', methods=['PATCH'])
-def update_movie(*args, **kwargs):
-	# get movie based on id
-	id = kwargs['id']
-	movie = Movie.query.filter_by(id=id).one_or_none()
+# route handler to get to form to update a movie record
+@app.route('/movies/<int:movie_id>/patch', methods=['GET'])
+@requires_auth('get:movieform')
+def update_movie_form(movie_id, jwt):
+	form = MovieForm()
+	movie = Movie.query.get(movie_id)
 
 	if movie is None:
 		return json.dumps({
@@ -151,31 +160,60 @@ def update_movie(*args, **kwargs):
 			'error': 'Movie could not be found to be updated',
 		}), 404
 
-	body = request.get_json()
+	if movie:
+		form.name.data = movie.name
+		form.director.data = movie.director
+		form.genre.data = movie.genre
+		form.release_year.data = movie.release_year
+		form.rating.data = movie.rating 
 
-	#if there is a movie name
-	if 'name' in body:
-		movie.name = body['name']
+	return render_template('forms/edit_movie.html', form=form, movie=movie)
 
-	# update movie
-	try:
-		movie.insert()
+# route handler to update movie records
+@app.route('/movies/<int:movie_id>/patch', methods=['POST'])
+@requires_auth('post:movies')
+def update_movie(movie_id, jwt):
+	# get movie based on id
+	movie = Movie.query.get(movie_id)
+	error = False
 
-		return json.dumps({
-			'success': True,
-			'movie': movie.id
-		}), 200
-	# return error if movie can't be updated
-	except:
+	if movie is None:
 		return json.dumps({
 			'success': False,
-			'error': 'An error occurred'
-		}), 400
+			'error': 'Movie could not be found to be updated',
+		}), 404
 
+	
+	try:
+		new_name = request.form.get('name')
+		movie.name = new_name
+		new_director = request.form.get('director')
+		movie.director = new_director
+		new_genre = request.form.get('genre')
+		movie.genre = new_genre
+		new_release_year = request.form.get('release_year')
+		movie.release_year = new_release_year
+		new_rating = request.form.get('rating')
+		movie.rating = new_rating
+
+		movie.update()
+
+	except:
+		error = True
+
+	if error:
+		#On unsuccessful db insert, flash an error
+		flash('Error: Movie ' + request.form['name'] + ' was not updated. Please check your inputs and try again :)')
+	else:
+		# On successful db insert, flash success
+		flash(request.form['name'] + ' was successfully updated!')
+
+	return render_template('pages/home.html')
 
 # route handler to delete movies
-@app.route('/movies/<int:movie_id>/delete', methods=['DELETE'])
-def delete_movie(movie_id):
+@app.route('/movies/<int:movie_id>/delete', methods=['GET'])
+@requires_auth('delete:movies')
+def delete_movie(movie_id, jwt):
 	# get movie to delete
 	movie = Movie.query.get(movie_id) 
 	error = False
@@ -190,11 +228,11 @@ def delete_movie(movie_id):
 		movie.delete()
 
 		# on successful db delete, flash success
-		flash('Movie ' + request.form['title'] + ' was successfully deleted!')
+		flash('Movie was successfully deleted!')
 
 	except:
 		error = True
-		flash('An error occurred. This movie ' + request.form['title'] + ' could not be deleted.')
+		flash('An error occurred. This movie could not be deleted.')
 	
 	return render_template('pages/home.html')
 
@@ -202,7 +240,9 @@ def delete_movie(movie_id):
 #  ----------------------------------------------------------------
 # route handler to get list of actors
 @app.route('/actors', methods = ['GET'])
-def get_actors():
+@cross_origin()
+@requires_auth('get:actors')
+def get_actors(jwt):
 	actors = Actor.query.all()
 
 	actors_data = []
@@ -219,13 +259,15 @@ def get_actors():
 
 # route handler to get to form to create a new actor
 @app.route('/actors/create', methods=['GET'])
-def create_actor_form():
+@requires_auth('get:actorform')
+def create_actor_form(jwt):
 	form = ActorForm()
 	return render_template('forms/new_actor.html', form=form)
 
 # route handler to create an actor profile in db
 @app.route('/actors/create', methods=['POST'])
-def create_actor():
+@requires_auth('post:actors')
+def create_actor(jwt):
 	# catch errors with try/except
 	error = False
 	# add user-submitted data and commit to db
@@ -237,16 +279,9 @@ def create_actor():
 	)
 	try:
 		actor.insert()
-		# db.session.add(self)
-		# db.session.commit()
 
 	except Exception as e:
 		error = True
-		# db.session.rollback()
-		# print(f'Error ==> {e}')
-
-	# finally:
-	# 	db.session.close()
 
 	if error:
 		# On unsuccessful db insert, flash an error
@@ -260,7 +295,8 @@ def create_actor():
 
 # route handler to get individual actor records
 @app.route('/actors/<int:actor_id>', methods=['GET'])
-def get_actor_details(actor_id):
+@requires_auth('get:actors')
+def get_actor_details(actor_id, jwt):
 	actor = Actor.query.get(actor_id)
 
 	if actor is None:
@@ -279,66 +315,97 @@ def get_actor_details(actor_id):
 
 	return render_template('pages/show_actor.html', actor=actor_details)
 
-# route handler to update actor records
-@app.route('/actors/<int:actor_id>', methods=['PATCH'])
-def update_actor(*args, **kwargs):
-	# get movie based on id
-	id = kwargs['id']
-	movie = Actor.query.filter_by(id=id).one_or_none()
+# route handler to get to form to update an actor record
+@app.route('/actors/<int:actor_id>/patch', methods=['GET'])
+@requires_auth('get:actorform')
+def update_actor_form(actor_id, jwt):
+	form = ActorForm()
+	actor = Actor.query.get(actor_id)
 
-	if movie is None:
+	if actor is None:
 		return json.dumps({
 			'success': False,
 			'error': 'Actor could not be found to be updated',
 		}), 404
 
-	body = request.get_json()
+	if actor:
+		form.name.data = actor.name
+		form.age.data = actor.age
+		form.gender.data = actor.gender
+		form.image_link.data = actor.image_link 
 
-	#if there is an actor name
-	if 'name' in body:
-		actor.name = body['name']
+	return render_template('forms/edit_actor.html', form=form, actor=actor)
 
-	# update actor 
-	try:
-		actor.insert()
+# route handler to update actor records
+@app.route('/actors/<int:actor_id>/patch', methods=['POST'])
+@requires_auth('post:actors')
+def update_actor(actor_id, jwt):
+	# get movie based on id
+	actor = Actor.query.get(actor_id)
+	error = False
 
-		return json.dumps({
-			'success': True,
-			'actor': actor.id
-		}), 200
-	# return error if actor can't be updated
-	except:
+	if actor is None:
 		return json.dumps({
 			'success': False,
-			'error': 'An error occurred'
-		}), 400
-
-# route handler to delete actors
-@app.route('/actors/<int:actor_id>', methods=['DELETE'])
-def delete_actor(actor_id):
+			'error': 'Actor could not be found to be updated',
+		}), 404
+	
 	try:
-		# get movie to delete
-		actor = Actor.query.get(actor_id) 
-		db.session.delete(actor)
-		db.session.commit()
+		new_name = request.form.get('name')
+		actor.name = new_name
+		new_age = request.form.get('age')
+		actor.age = new_age
+		new_gender = request.form.get('gender')
+		actor.gender = new_gender
+		new_image_link = request.form.get('image_link')
+		actor.image_link = new_image_link
 
-		# on successful db delete, flash success
-		flash('Actor ' + request.form['name'] + ' was successfully deleted!')
+		actor.update()
 
 	except:
-		db.session.rollback()
-		flash('An error occurred. Actor ' + request.form['name'] + ' could not be deleted.')
+		error = True
 
-	finally:
-		db.session.close()
+	if error:
+		#On unsuccessful db insert, flash an error
+		flash('Error: Actor ' + request.form['name'] + ' was not updated. Please check your inputs and try again :)')
+	else:
+		# On successful db insert, flash success
+		flash(request.form['name'] + ' was successfully updated!')
 
+	return render_template('pages/home.html')
+
+# route handler to delete actors
+@app.route('/actors/<int:actor_id>/delete', methods=['GET'])
+@requires_auth('delete:actors')
+def delete_actor(actor_id, jwt):
+	# get actor to delete
+	actor = Actor.query.get(actor_id) 
+	error = False
+	
+	if actor is None:
+		return json.dumps({
+			'success': False,
+			'error': 'Actor could not be found'
+		}), 404
+
+	try:
+		actor.delete()
+
+		# on successful db delete, flash success
+		flash('Actor was successfully deleted!')
+
+	except:
+		error = True
+		flash('An error occurred. This actor could not be deleted.')
+	
 	return render_template('pages/home.html')
 
 #  Cast a Movie
 #  ----------------------------------------------------------------
 # route handler to get to form to cast a movie
 @app.route('/cast/create', methods=['GET'])
-def create_cast_form():				
+@requires_auth('get:castform')
+def create_cast_form(jwt):				
 	movies = Movie.query.all()
 	actors = Actor.query.all()		
 
@@ -346,19 +413,27 @@ def create_cast_form():
 
 # route handler to cast a movie in db
 @app.route('/cast/create', methods=['POST'])
-def create_cast():
+@requires_auth('post:cast')
+def create_cast(jwt):
 	error = False
 	actor_id = request.form.get('actor_id')
 	movie_id = request.form.get('movie_id')
 
 	try:
+		actor = Actor.query.get(actor_id)
 		movie = Movie.query.get(movie_id)
-		actor = Movie.query.get(actor_id)
 
-		if movie is None or actor is None:
+		if actor is None:
 			return json.dumps({
-				'success': False,
-			}), 400
+			'success': False,
+			'error': 'Actor could not be found'
+			}), 404
+
+		if movie is None:
+			return json.dumps({
+			'success': False,
+			'error': 'Movie could not be found'
+			}), 404
 
 		movie.cast.append(actor)
 		movie.update()
