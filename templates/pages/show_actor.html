@@ -10,10 +10,10 @@
 			ID: {{ actor.id }}
 		</p>
 		<div class="age">
-			<span class="age">{{ actor.age }}</span>	
+			<span class="age"><strong>Age:</strong> {{ actor.age }}</span>	
 		</div>
 		<div class="gender">
-			<span class="gender">{{ actor.gender }}</span>
+			<span class="gender"><strong>Gender:</strong> {{ actor.gender }}</span>
 		</div>
 	<div class="col-sm-6">
 		<img src="{{ actor.image_link }}" alt="Actor Image" />
@@ -24,7 +24,16 @@
 <section>
 		<div class = "row">
 		<div class="col-sm-6">
-			<button><a href="/actors/{{ actor.id }}/patch">Edit actor</a></button> <button><a href="/actors/{{ actor.id }}/delete">Delete actor</a> </button>
+			<button>
+				<a href="{{ url_for('update_actor_form', actor_id=actor.id) }}">
+			    Edit actor profile
+			  	</a>
+			</button> 
+			<button>
+				<a href="{{ url_for('delete_actor', actor_id=actor.id) }}">
+			    Delete actor
+			  	</a>
+			</button>
 		</div>
 		</div>
 	</section>

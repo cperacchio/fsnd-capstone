@@ -9,16 +9,16 @@
 		<p class="subtitle">
 			ID: {{ movie.id }}
 		</p>
-		<div class="director">
-			<span class="director">{{ movie.director }}</span>
-		</div>
 		<div class="genre">
 			<span class="genre">{{ movie.genre }}</span>
 		</div>
-		<p>
-			<i class="fas fa-globe-americas"></i> {{ movie.release_year }}
-		</p>
-		<div class="rating"> {{ movie.rating }} </div>
+		<div class="director">
+			<span class="director"><strong>Director:</strong> {{ movie.director }}</span>
+		</div>
+		<div class="release_year">
+			<span class="release_year"><strong>Release Year:</strong> {{ movie.release_year }}</span>
+		</div>
+		<div class="rating"><strong>Rating:</strong> {{ movie.rating }} </div>
 	</div>
 </div>
 
@@ -27,7 +27,7 @@
 		<h2 class="monospace">Movie cast</h2>
 		{% for actor in movie.cast %}
 		<div class="cast">
-			<h3><a href="/actors/{{actor.id}}">{{actor.name}}</a></h3>
+			<h5><a href="/actors/{{actor.id}}">{{actor.name}}</a></h5>
 		</div>
 		{% endfor %}
 	</div>
@@ -38,14 +38,14 @@
 		<div class = "row">
 		<div class="col-sm-6">
 			<button>
-	  			<a href="{{ url_for('update_movie', movie_id=movie.id) }}">
-	    		Edit project
-	  			</a>
+				<a href="{{ url_for('update_movie_form', movie_id=movie.id) }}">
+			    Edit project
+			  	</a>
 			</button> 
 			<button>
-	  			<a href="{{ url_for('delete_movie', movie_id=movie.id) }}">
-	    		Delete project
-	  			</a>
+				<a href="{{ url_for('delete_movie', movie_id=movie.id) }}">
+			    Delete project
+			  	</a>
 			</button>
 		</div>
 		</div>
