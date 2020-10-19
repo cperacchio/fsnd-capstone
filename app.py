@@ -56,7 +56,7 @@ def generate_auth_url():
         f'http://localhost:5000'
     
     return json.dumps({
-		'url': 'https://fsnd79.auth0.com/login'
+		'url': url
 	}), 200
     
 # route handler for home page
