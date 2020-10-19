@@ -36,16 +36,29 @@ def after_request(response):
 	response.headers.add('Access-Control-Allow-Methods', 'GET,PATCH,POST,DELETE,OPTIONS')
 	return response
 
+
+# @app.route('/login', methods= ['GET'])
+# @cross_origin()
+# def log_in():
+# 	login = requests.get('https://fsnd79.auth0.com/authorize?audience=casting@response_type=token&client_id=2FaJjQSAtsiLqHMEfNlS0ThYQ6Oyuh9c&redirect_uri=http://localhost:8100/')
+
+# 	return json.dumps({
+# 		'success': True,
+# 	}), 200
+
 # route handler to log in
-@app.route('/login', methods= ['GET'])
-@cross_origin()
-def log_in():
-	login = requests.get('https://fsnd79.auth0.com/authorize?audience=casting@response_type=token&client_id=2FaJjQSAtsiLqHMEfNlS0ThYQ6Oyuh9c&redirect_uri=http://localhost:8100/')
-
-	return json.dumps({
-		'success': True,
+@app.route("/authorize", methods=["GET"])
+def generate_auth_url():
+    url = f'https://fsnd79.auth0.com/authorize' \
+    	f'?audience=casting' \
+        f'&response_type=token&client_id=' \
+        f'2FaJjQSAtsiLqHMEfNlS0ThYQ6Oyuh9c&redirect_uri=' \
+        f'http://localhost:5000'
+    
+    return json.dumps({
+		'url': 'https://fsnd79.auth0.com/login'
 	}), 200
-
+    
 # route handler for home page
 @app.route('/')
 @cross_origin()
