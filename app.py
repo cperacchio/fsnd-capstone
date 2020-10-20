@@ -37,6 +37,11 @@ def after_request(response):
 	response.headers.add('Access-Control-Allow-Methods', 'GET,PATCH,POST,DELETE,OPTIONS')
 	return response
 
+# # route handler for home page
+# @app.route('/')
+# @cross_origin()
+# def index():
+# 	return render_template('pages/home.html')
 
 # route handler to log in
 oauth = OAuth(app)
@@ -52,17 +57,16 @@ auth0 = oauth.register(
     },
 )
 
-@app.route('/authorize')
+@app.route('/login')
 @cross_origin()
 def login():
-    return auth0.authorize_redirect(redirect_uri='http://localhost:5000/post-authorize', audience=casting)
+    return auth0.authorize_redirect(redirect_uri='http://localhost:5000/post-login', audience='casting')
 
 # route handler for home page once logged in
-@app.route('/post-authorize')
+@app.route('/post-login')
 @cross_origin()
-def post_auth():
-	response = make_response(render_template('pages/home.html'))
-	return response
+def post_login():
+	return render_template('pages/home.html')
 
 #  Movies
 #  ----------------------------------------------------------------
