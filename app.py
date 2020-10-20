@@ -7,8 +7,9 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS, cross_origin
 from models import setup_db, Movie, Actor
 import simplejson as json
-from auth.auth import requires_auth, AuthError
+from auth.auth import requires_auth, AuthError 
 from forms import MovieForm, ActorForm
+from authlib.integrations.flask_client import OAuth
 
 SECRET_KEY = os.urandom(32)
 
@@ -37,33 +38,31 @@ def after_request(response):
 	return response
 
 
-# @app.route('/login', methods= ['GET'])
-# @cross_origin()
-# def log_in():
-# 	login = requests.get('https://fsnd79.auth0.com/authorize?audience=casting@response_type=token&client_id=2FaJjQSAtsiLqHMEfNlS0ThYQ6Oyuh9c&redirect_uri=http://localhost:8100/')
-
-# 	return json.dumps({
-# 		'success': True,
-# 	}), 200
-
 # route handler to log in
-@app.route("/authorize", methods=["GET"])
-def generate_auth_url():
-    url = f'https://fsnd79.auth0.com/authorize' \
-    	f'?audience=casting' \
-        f'&response_type=token&client_id=' \
-        f'2FaJjQSAtsiLqHMEfNlS0ThYQ6Oyuh9c&redirect_uri=' \
-        f'http://localhost:5000'
-    
-    return json.dumps({
-		'url': url
-	}), 200
-    
-# route handler for home page
-@app.route('/')
+oauth = OAuth(app)
+auth0 = oauth.register(
+    'auth0',
+    client_id='2FaJjQSAtsiLqHMEfNlS0ThYQ6Oyuh9c',
+    client_secret='zyo8mHSRsJPhveP8t0k3ZhdapaQs5Dcl-uZBoy6fJGjnTK8jM5lq5ySIDbSC7wVo',
+    api_base_url='https://fsnd79.auth0.com',
+    access_token_url='https://fsnd79.auth0.com' + '/oauth/token',
+    authorize_url='https://fsnd79.auth0.com' + '/authorize',
+    client_kwargs={
+        'scope': 'openid profile email',
+    },
+)
+
+@app.route('/authorize')
 @cross_origin()
-def index():
-	return render_template('pages/home.html')
+def login():
+    return auth0.authorize_redirect(redirect_uri='http://localhost:5000', audience=casting)
+
+# route handler for home page once logged in
+@app.route('/post-authorize')
+@cross_origin()
+def post_auth():
+	response = make_response(render_template('pages/home.html'))
+	return response
 
 #  Movies
 #  ----------------------------------------------------------------
