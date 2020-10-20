@@ -55,7 +55,7 @@ auth0 = oauth.register(
 @app.route('/authorize')
 @cross_origin()
 def login():
-    return auth0.authorize_redirect(redirect_uri='http://localhost:5000', audience=casting)
+    return auth0.authorize_redirect(redirect_uri='http://localhost:5000/post-authorize', audience=casting)
 
 # route handler for home page once logged in
 @app.route('/post-authorize')
