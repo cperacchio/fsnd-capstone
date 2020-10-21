@@ -11,14 +11,16 @@ from auth.auth import requires_auth, AuthError
 from forms import MovieForm, ActorForm
 from authlib.integrations.flask_client import OAuth
 
-SECRET_KEY = os.urandom(32)
-
 #----------------------------------------------------------------------------#
 # Initialize App 
 #----------------------------------------------------------------------------#
+SECRET_KEY = os.urandom(32)
+
 def create_app(test_config=None):
 	# create and configure the app
+  	# login_url = os.environ.get("LOGIN_URL")
   	app = Flask(__name__)
+  	# app.config["TEMPLATES_AUTO_RELOAD"] = True
   	app.config['SECRET_KEY'] = SECRET_KEY
   	setup_db(app)
   	CORS(app)
@@ -66,6 +68,16 @@ def login():
 @app.route('/post-login')
 @cross_origin()
 def post_login():
+	# auth0 = app.config['auth0']
+	auth0.authorize_access_token()
+	resp = auth0.get('userinfo')
+	userinfo = resp.json()
+	session[constants.JWT_PAYLOAD] = userinfo
+	session[constants.PROFILE_KEY] = {
+		'user_id': userinfo['sub'],
+		'name': userinfo['name'],
+		'picture': userinfo['picture']
+	}
 	return render_template('pages/home.html')
 
 #  Movies
