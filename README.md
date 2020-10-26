@@ -9,7 +9,10 @@ This is my final project for the [Udacity Full Stack Nanodegree](https://www.uda
 To access it, you need to download the requirements:
 $ pip3 install -r requirements.txt
 
+## Setup
 And run the development server: </br>
 $ export FLASK_APP=app.py </br>
 $ export FLASK_ENV=development # enables debug mode </br>
 $ flask run --reload
+
+## Usage
