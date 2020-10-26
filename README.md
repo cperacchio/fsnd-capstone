@@ -6,11 +6,16 @@ This is my final project for the [Udacity Full Stack Nanodegree](https://www.uda
 The Fyyur Casting Agency is responsible for creating movies and managing and assigning actors to those movies. The agency is looking to create a system to streamline the casting process.
 
 #### Which problems does it solve?
+This casting agency had:
+- A manual process for casting actors to movies
 - No central store for movie and actor data
-- 
+- No way to limit access to sensitive casting information
 
 #### What are the benefits?
-- 
+Now, the agency can:
+- Easily cast actors to movies using the app
+- Keep track of movie projects and actor profiles, all in one place
+- Provision role-based access controls to protect sensitive casting information
 
 #### How does it work?
 It has a page where movies are listed, a page where actors are listed, and a form allowing you to match actors with movies in development. Casting an actor to a movie will update the details of that movie record, giving the agency an easy way to keep track of the casting process.
