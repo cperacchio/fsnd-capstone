@@ -29,7 +29,7 @@ $ pip3 install -r requirements.txt
 ```
 
 ## Setup
-Next up, you need to start the development server:  
+Next, you need to start the development server:  
 ```
 $ export FLASK_APP=app.py 
 $ export FLASK_ENV=development # enables debug mode  
@@ -53,6 +53,8 @@ Users can access the app's functionality via two roles, each with specific acces
 ### API endpoints
 This casting app API includes the following endpoints:
 
+#### GET /login
+
 #### GET /movies
 
 #### GET /actors
@@ -61,4 +63,22 @@ This casting app API includes the following endpoints:
 
 #### GET /actors/{actor_id}
 
+#### GET /movies/create
 
+#### GET /actors/create
+
+#### POST /movies/create
+
+#### POST /actors/create
+
+#### GET /movies/{movie_id}/patch
+
+#### GET /actors/{actor_id}/patch
+
+#### GET /movies/{movie_id}/delete
+
+#### GET /actors/{actor_id}/delete
+
+#### GET /cast/create
+
+#### POST /cast/create
