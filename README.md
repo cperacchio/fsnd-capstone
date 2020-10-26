@@ -8,8 +8,8 @@ The Fyyur Casting Agency is responsible for creating movies and managing and ass
 #### How does it work?
 The app has a page where movies are listed, a page where actors are listed, and a form allowing you to match actors with movies in development. Casting an actor to a movie will update the details of that movie record, giving the agency an easy way to keep track of the casting process. Now, the agency can:
 - Easily cast actors to movies using the app
-- Keep track of upcoming movie projects and actor profiles, all in one place
-- Control who can view, update, or delete casting information, based on their role at the agency
+- Keep track of upcoming movie projects, actor profiles, and casting information all in one place
+- Control who can view, creat, update, or delete casting information, based on their role at the agency
 
 ## Skills covered
 - Coding in Python 3
