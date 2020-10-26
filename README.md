@@ -2,6 +2,12 @@
 
 This is my final project for the [Udacity Full Stack Nanodegree](https://www.udacity.com/course/full-stack-web-developer-nanodegree--nd004). It's an app allowing you to cast actors to movie projects. It has a page where movies are listed, a page where actors are listed, and a form allowing you to match actors with movies in development.  
 
+#### What's the problem this solves?
+
+#### Who's it for?
+
+#### What are the benefits?
+
 ## Skills covered
 - Coding in Python 3
 - Relational database architecture
