@@ -49,15 +49,15 @@ Users can access the app's functionality via two roles, each with specific acces
 1. <strong>Casting assistant</strong>: Can view upcoming movie projects and listed actors and see details about both
 ```
 Sample casting assistant login credentials
-- User:
-- Password:
+User:
+Password:
 ```
 
 2. <strong>Executive producer</strong>: Full access, with the ability to view, list, and delete both movie projects and actors
 ```
 Sample executive producer login credentials
-- User:
-- Password:
+User:
+Password:
 ```
 
 ### API endpoints
