@@ -54,31 +54,46 @@ Users can access the app's functionality via two roles, each with specific acces
 This casting app API includes the following endpoints. Below is an overview of their expected behavior.
 
 #### GET /login
+- Redirects the user to the Auth0 login page, where the user can log in or sign up
 
 #### GET /movies
+- Returns a list of all the movie projects in the database
 
 #### GET /actors
+- Returns a list of all the actors in the database
 
 #### GET /movies/{movie_id}
+- Returns details about each individual movie project listed in the database
 
 #### GET /actors/{actor_id}
+- Returns details about each individual actor listed in the database
 
 #### GET /movies/create
+- Returns the form to list a new movie project
 
 #### GET /actors/create
+- Returns the form to list a new actor profile
 
 #### POST /movies/create
+- Adds a new movie project to the database, including the new movie's name, genre, release year, and rating
 
 #### POST /actors/create
+- Adds a new actor profile to the database, including the new actor's name, age, and gender
 
 #### GET /movies/{movie_id}/patch
+- Updates an existing movie project, with revised details related to the movie's name, genre, release year, or rating
 
 #### GET /actors/{actor_id}/patch
+- Updates an existing actor profile, with revised details related to the actor's name, age, or gender
 
 #### GET /movies/{movie_id}/delete
+- Deletes a movie project from the database
 
 #### GET /actors/{actor_id}/delete
+- Deletes an actor profile from the database
 
 #### GET /cast/create
+- Returns the form to cast an actor to a movie project
 
 #### POST /cast/create
+- Casts an actor to an upcoming movie project by appending the actor to the movie's cast in the database
