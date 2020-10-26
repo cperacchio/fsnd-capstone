@@ -1,4 +1,4 @@
-# Casting App for Capstone Project
+# Movie Casting App 
 
 This is my final project for the [Udacity Full Stack Nanodegree](https://www.udacity.com/course/full-stack-web-developer-nanodegree--nd004). It's an app allowing a casting agency to cast actors for upcoming projects. 
 
