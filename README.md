@@ -75,10 +75,10 @@ This casting app API includes the following endpoints. Below is an overview of t
 - Returns the form to list a new actor profile
 
 #### POST /movies/create
-- Adds a new movie project to the database, including the new movie's name, genre, release year, and rating
+- Adds a new movie project to the database, including the movie's name, genre, release year, and rating
 
 #### POST /actors/create
-- Adds a new actor profile to the database, including the new actor's name, age, and gender
+- Adds a new actor profile to the database, including the actor's name, age, and gender
 
 #### GET /movies/{movie_id}/patch
 - Updates an existing movie project, with revised details related to the movie's name, genre, release year, or rating
