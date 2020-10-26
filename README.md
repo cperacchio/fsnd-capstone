@@ -79,10 +79,10 @@ This casting app API includes the following endpoints. Below is an overview of t
 - Returns details about each individual actor listed in the database
 
 #### GET /movies/create
-- Returns the form to list a new movie project
+- Returns the form to list a movie project
 
 #### GET /actors/create
-- Returns the form to list a new actor profile
+- Returns the form to list an actor profile
 
 #### POST /movies/create
 - Adds a new movie project to the database, including the movie's name, genre, release year, and rating
