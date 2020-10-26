@@ -46,11 +46,9 @@ $ flask run --reload
 ### Casting app roles
 Users can access the app's functionality via two roles, each with specific access permissions:
 
-1. Casting assistant
-- Can view upcoming movie projects and listed actors and see details about both
+1. <strong>Casting assistant</strong>: Can view upcoming movie projects and listed actors and see details about both
 
-2. Executive producer
-- Full access, with the ability to view, list, and delete both movie projects and actors
+2. <strong>Executive producer</strong>: Full access, with the ability to view, list, and delete both movie projects and actors
 
 ### API endpoints
 This casting app API includes the following endpoints:
