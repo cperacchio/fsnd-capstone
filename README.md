@@ -3,7 +3,7 @@
 This is my final project for the [Udacity Full Stack Nanodegree](https://www.udacity.com/course/full-stack-web-developer-nanodegree--nd004). It's an app allowing a casting agency to cast actors for upcoming projects. 
 
 #### Who's it for?
-The Fyyur Casting Agency is responsible for creating movies and managing and assigning actors to those movies. The agency is looking to create a system simplify and streamline this process.
+The Fyyur Casting Agency is responsible for creating movies and managing and assigning actors to those movies. The agency is looking to create a system to streamline this process.
 
 #### Which problems does it solve?
 - No central store for movie and actor data
