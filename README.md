@@ -1,6 +1,6 @@
 # Casting App for Capstone Project
 
-This is my final project for the [Udacity Full Stack Nanodegree](https://www.udacity.com/course/full-stack-web-developer-nanodegree--nd004). It's an app allowing you to cast actors to movie projects. 
+This is my final project for the [Udacity Full Stack Nanodegree](https://www.udacity.com/course/full-stack-web-developer-nanodegree--nd004). It's an app allowing a movie casting agency to cast actors to upcoming movie projects. 
 
 #### Who's it for?
 The Casting Agency models a company that is responsible for creating movies and managing and assigning actors to those movies. You are an Executive Producer within the company and are creating a system to simplify and streamline your process.
