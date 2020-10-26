@@ -52,7 +52,15 @@ Users can access the app's functionality via two roles, each with specific acces
 2. Executive producer
 - Full access, with the ability to view, list, and delete both movie projects and actors
 
-### API Endpoints
+### API endpoints
 This casting app API includes the following endpoints:
+
+#### GET /movies
+
+#### GET /actors
+
+#### GET /movies/{movie_id}
+
+#### GET /actors/{actor_id}
 
 
