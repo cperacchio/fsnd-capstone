@@ -15,7 +15,7 @@ This casting agency had:
 Now, the agency can:
 - Easily cast actors to movies using the app
 - Keep track of movie projects and actor profiles, all in one place
-- Provision role-based access controls to protect sensitive casting information
+- Provision role-based access controls to protect casting information
 
 #### How does it work?
 It has a page where movies are listed, a page where actors are listed, and a form allowing you to match actors with movies in development. Casting an actor to a movie will update the details of that movie record, giving the agency an easy way to keep track of the casting process.
