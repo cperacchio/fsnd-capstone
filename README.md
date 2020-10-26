@@ -2,9 +2,10 @@
 
 This is my final project for the [Udacity Full Stack Nanodegree](https://www.udacity.com/course/full-stack-web-developer-nanodegree--nd004). It's an app allowing you to cast actors to movie projects. It has a page where movies are listed, a page where actors are listed, and a form allowing you to match actors with movies in development.  
 
-#### What's the problem this solves?
-
 #### Who's it for?
+The Casting Agency models a company that is responsible for creating movies and managing and assigning actors to those movies. You are an Executive Producer within the company and are creating a system to simplify and streamline your process.
+
+#### What's the problem this solves?
 
 #### What are the benefits?
 
