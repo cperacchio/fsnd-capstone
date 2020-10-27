@@ -62,7 +62,7 @@ User:
 Password:
 ```
 
-2. <strong>Executive producer</strong>: Full access, with the ability to view, list, and delete both movie projects and actors
+2. <strong>Executive producer</strong>: Full access, with the ability to view, list, update, and delete both movie projects and actors
 ```
 Sample executive producer login credentials
 User:
