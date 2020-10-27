@@ -53,7 +53,7 @@ $ flask run --reload
 ## Usage
 
 ### Casting app roles
-Users can access the app's functionality via two roles, each with specific access permissions:
+Users can access the app's homepage anonymously and its functionality via two roles with specific access permissions:
 
 1. <strong>Casting assistant</strong>: Can view upcoming movie projects and listed actors and see details about both
 ```
