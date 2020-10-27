@@ -46,50 +46,53 @@ def after_request(response):
 def index():
 	return render_template('pages/home.html')
 
-# # route handler to log in
-# oauth = OAuth(app)
-# auth0 = oauth.register(
-#     'auth0',
-#     client_id='2FaJjQSAtsiLqHMEfNlS0ThYQ6Oyuh9c',
-#     client_secret='zyo8mHSRsJPhveP8t0k3ZhdapaQs5Dcl-uZBoy6fJGjnTK8jM5lq5ySIDbSC7wVo',
-#     api_base_url='https://fsnd79.auth0.com',
-#     access_token_url='https://fsnd79.auth0.com' + '/oauth/token',
-#     authorize_url='https://fsnd79.auth0.com' + '/authorize',
-#     client_kwargs={
-#         'scope': 'openid profile email',
-#     },
-# )
+# auth0 info
+oauth = OAuth(app)
+auth0 = oauth.register(
+    'auth0',
+    client_id='2FaJjQSAtsiLqHMEfNlS0ThYQ6Oyuh9c',
+    client_secret='zyo8mHSRsJPhveP8t0k3ZhdapaQs5Dcl-uZBoy6fJGjnTK8jM5lq5ySIDbSC7wVo',
+    api_base_url='https://fsnd79.auth0.com',
+    access_token_url='https://fsnd79.auth0.com' + '/oauth/token',
+    authorize_url='https://fsnd79.auth0.com' + '/authorize',
+    client_kwargs={
+        'scope': 'openid profile email',
+    },
+)
 
 @app.route('/login', methods = ['GET'])
 @cross_origin()
 def login():
-	req = requests.get('https://fsnd79.auth0.com/authorize?audience=casting&response_type=token&client_id=2FaJjQSAtsiLqHMEfNlS0ThYQ6Oyuh9c&redirect_uri=http://localhost:5000/post-login')
+	return auth0.authorize_redirect(redirect_uri='http://localhost:5000/post-login', audience='casting')
 
-	return Response(
-    	req.text,
-    	status = req.status_code,
-    	content_type = req.headers['content-type']
-    )
+	# alternate approach to login
+	# req = requests.get('https://fsnd79.auth0.com/authorize?audience=casting&response_type=token&client_id=2FaJjQSAtsiLqHMEfNlS0ThYQ6Oyuh9c&redirect_uri=http://localhost:5000/post-login')
+
+	# return Response(
+ #    	req.text,
+ #    	status = req.status_code,
+ #    	content_type = req.headers['content-type']
+ #    )
     # return auth0.authorize_redirect(redirect_uri='http://localhost:5000/post-login', audience='casting')
 
 # route handler for home page once logged in
 @app.route('/post-login', methods = ['GET'])
 @cross_origin()
 def post_login():
-	resp = make_response(render_template('pages/home.html'))
-	return resp
+	auth0.authorize_access_token()
+	resp = auth0.get('userinfo')
+	userinfo = resp.json()
+	session[constants.JWT_PAYLOAD] = userinfo
+	session[constants.PROFILE_KEY] = {
+		'user_id': userinfo['sub'],
+		'name': userinfo['name']
+		}
+	return render_template('pages/home.html')
 
-	# auth0 = app.config['auth0']
-	# auth0.authorize_access_token()
-	# resp = auth0.get('userinfo')
-	# userinfo = resp.json()
-	# session[constants.JWT_PAYLOAD] = userinfo
-	# session[constants.PROFILE_KEY] = {
-	# 	'user_id': userinfo['sub'],
-	# 	'name': userinfo['name'],
-	# 	'picture': userinfo['picture']
-	# }
-	# return render_template('pages/home.html')
+    # alternate approach to login
+	# resp = make_response(render_template('pages/home.html'))
+	# return resp
+
 
 #  Movies
 #  ----------------------------------------------------------------
