@@ -1,14 +1,16 @@
 import json
-from flask import request, _request_ctx_stack
+import os
+import sys
+from flask import request, _request_ctx_stack, abort
 from functools import wraps
 from jose import jwt
 from urllib.request import urlopen
 from os import environ
 
 
-AUTH0_DOMAIN = environ.get('AUTH0_DOMAIN', 'fsnd79.auth0.com')
+AUTH0_DOMAIN = os.getenv('AUTH0_DOMAIN')
 ALGORITHMS = ['RS256']
-API_AUDIENCE = environ.get('API_AUDIENCE', 'casting')
+API_AUDIENCE = 'casting'
 
 ## AuthError Exception
 '''
@@ -31,21 +33,21 @@ class AuthError(Exception):
         it should raise an AuthError if the header is malformed
     return the token part of the header
 '''
-def get_token_auth_header():
-    """Obtains the Access Token from the Authorization Header
-    """
-    if "Authorization" in request.headers:
-        auth_header = request.headers["Authorization"]
-        if auth_header:
-            bearer_token_array = auth_header.split(' ')
-            if bearer_token_array[0] and bearer_token_array[0].lower() == "bearer" and bearer_token_array[1]:
-                return bearer_token_array[1]
+# def get_token_auth_header():
+#     """Obtains the Access Token from the Authorization Header
+#     """
+#     if "Authorization" in request.headers:
+#         auth_header = request.headers["Authorization"]
+#         if auth_header:
+#             bearer_token_array = auth_header.split(' ')
+#             if bearer_token_array[0] and bearer_token_array[0].lower() == "bearer" and bearer_token_array[1]:
+#                 return bearer_token_array[1]
 
-    raise AuthError({
-        'success': False,
-        'message': 'JWT not found',
-        'error': 401
-    }, 401)
+#     raise AuthError({
+#         'success': False,
+#         'message': 'JWT not found',
+#         'error': 401
+#     }, 401)
 
 
 '''
@@ -60,15 +62,16 @@ def get_token_auth_header():
     return true otherwise
 '''
 def check_permissions(permission, payload):
-    if "permissions" in payload:
-        if permission in payload['permissions']:
-            return True
+    if 'permissions' not in payload:
+        abort(400)
 
-    raise AuthError({
-        'success': False,
-        'message': 'Permission not found in JWT',
-        'error': 401
-    }, 401)
+    if 'permission' not in payload['permissions']:
+        raise AuthError({
+            'success': False,
+            'message': 'Permission not found in JWT',
+            'error': 401
+        }, 401)
+    return True
 
 '''
 @TODO implement verify_decode_jwt(token) method
@@ -119,7 +122,7 @@ def verify_decode_jwt(token):
                 rsa_key,
                 algorithms=ALGORITHMS,
                 audience=API_AUDIENCE,
-                issuer='https://' + AUTH0_DOMAIN + '/'
+                issuer='https://{AUTH0_DOMAIN}/'
             )
 
             return payload
@@ -164,10 +167,16 @@ def requires_auth(permission=''):
     def requires_auth_decorator(f):
         @wraps(f)
         def wrapper(*args, **kwargs):
-            token = get_token_auth_header()
-            payload = verify_decode_jwt(token)
-            check_permissions(permission, payload)
-            return f(payload, *args, **kwargs)
+            try:
+                token = request.cookies.get('user_token')
+                if token is None:
+                    abort(400)
+                payload = verify_decode_jwt(token)
+                check_permissions(permission, payload)
+                return f(payload, *args, **kwargs)
+            except Exception:
+                abort(401)
+
 
         return wrapper
     return requires_auth_decorator

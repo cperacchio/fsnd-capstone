@@ -1,5 +1,5 @@
 #----------------------------------------------------------------------------#
-# Imports
+# Imports and Auth0
 #----------------------------------------------------------------------------#
 import os
 import requests
@@ -11,7 +11,13 @@ import simplejson as json
 from auth.auth import requires_auth, AuthError 
 from forms import MovieForm, ActorForm
 from authlib.integrations.flask_client import OAuth
-#import constants
+
+AUTH0_CALLBACK_URL = os.getenv('AUTH0_CALLBACK_URL')
+AUTH0_CLIENT_ID = os.getenv('AUTH0_CLIENT_ID')
+AUTH0_CLIENT_SECRET = os.getenv('AUTH0_CLIENT_SECRET')
+AUTH0_DOMAIN = os.getenv('AUTH0_DOMAIN')
+AUTH0_BASE_URL = os.getenv('AUTH0_BASE_URL')
+AUTH0_AUDIENCE = os.getenv('AUTH0_AUDIENCE')
 
 #----------------------------------------------------------------------------#
 # Initialize App 
@@ -20,7 +26,6 @@ from authlib.integrations.flask_client import OAuth
 
 def create_app(test_config=None):
 	# create and configure the app
-  	#SESSION_COOKIE_DOMAIN = '127.0.0.1'
   	app = Flask(__name__)
   	app.secret_key = "very secret key"
   	#app.config['SECRET_KEY'] = 'very_secret_key'
@@ -34,22 +39,9 @@ app = create_app()
 #----------------------------------------------------------------------------#
 # Controllers.
 #----------------------------------------------------------------------------#
-
-@app.after_request
-def after_request(response):
-	response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization,true')
-	response.headers.add('Access-Control-Allow-Methods', 'GET,PATCH,POST,DELETE,OPTIONS')
-	return response
-
-# AUTH0_CALLBACK_URL = constants.AUTH0_CALLBACK_URL
-# AUTH0_CLIENT_ID = os.environ['AUTH0_CLIENT_ID']
-# AUTH0_CLIENT_SECRET = os.environ['AUTH0_CLIENT_SECRET']
-# AUTH0_DOMAIN = os.environ['AUTH0_DOMAIN']
-# AUTH0_BASE_URL = 'https://' + os.environ['AUTH0_DOMAIN']
-# AUTH0_AUDIENCE = constants.AUTH0_AUDIENCE
-
 # auth0 info
 oauth = OAuth(app)
+
 auth0 = oauth.register(
 	'auth0',
 	client_id='2FaJjQSAtsiLqHMEfNlS0ThYQ6Oyuh9c',
@@ -62,6 +54,12 @@ auth0 = oauth.register(
 		},
 )
 
+@app.after_request
+def after_request(response):
+	response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization,true')
+	response.headers.add('Access-Control-Allow-Methods', 'GET,PATCH,POST,DELETE,OPTIONS')
+	return response
+
 # route handler for home page when anonymous user visits
 @app.route('/')
 @cross_origin()
@@ -71,11 +69,10 @@ def index():
 @app.route('/login', methods = ['GET'])
 @cross_origin()
 def login():
-	# state = uuid.uuid4().hex
 	# redirect_url = url_for("http://localhost:5000/post-login", _external=True)
 	# auth0.save_authorize_state(redirect_uri=redirect_url, state=state)
 	#return render_template('pages/home.html', token=session['jwt_token'])
-	return auth0.authorize_redirect(redirect_uri='http://localhost:5000/post-login', audience='casting')
+	return auth0.authorize_redirect(redirect_uri='http://localhost:5000/post-login', audience=AUTH0_AUDIENCE)
 
 # route handler for home page once logged in
 @app.route('/post-login', methods = ['GET'])
@@ -122,7 +119,7 @@ def get_movies(jwt):
 # route handler to get to form to create a new movie
 @app.route('/movies/create', methods=['GET'])
 @requires_auth('get:movieform')
-def create_movie_form(payload):
+def create_movie_form(jwt):
 	form = MovieForm()
 	
 	return render_template('forms/new_movie.html', form=form)
