@@ -10,14 +10,14 @@ from models import setup_db, Movie, Actor
 import simplejson as json
 from auth.auth import requires_auth, AuthError 
 from forms import MovieForm, ActorForm
-from authlib.integrations.flask_client import OAuth
+#from authlib.integrations.flask_client import OAuth
 
-AUTH0_CALLBACK_URL = os.getenv('AUTH0_CALLBACK_URL')
-AUTH0_CLIENT_ID = os.getenv('AUTH0_CLIENT_ID')
-AUTH0_CLIENT_SECRET = os.getenv('AUTH0_CLIENT_SECRET')
-AUTH0_DOMAIN = os.getenv('AUTH0_DOMAIN')
-AUTH0_BASE_URL = os.getenv('AUTH0_BASE_URL')
-AUTH0_AUDIENCE = os.getenv('AUTH0_AUDIENCE')
+# AUTH0_CALLBACK_URL = os.getenv('AUTH0_CALLBACK_URL')
+# AUTH0_CLIENT_ID = os.getenv('AUTH0_CLIENT_ID')
+# AUTH0_CLIENT_SECRET = os.getenv('AUTH0_CLIENT_SECRET')
+# AUTH0_DOMAIN = os.getenv('AUTH0_DOMAIN')
+# AUTH0_BASE_URL = os.getenv('AUTH0_BASE_URL')
+# AUTH0_AUDIENCE = os.getenv('AUTH0_AUDIENCE')
 
 #----------------------------------------------------------------------------#
 # Initialize App 
@@ -40,19 +40,19 @@ app = create_app()
 # Controllers.
 #----------------------------------------------------------------------------#
 # auth0 info
-oauth = OAuth(app)
+# oauth = OAuth(app)
 
-auth0 = oauth.register(
-	'auth0',
-	client_id='tQtZK49lU42FD6sRTFFnxOvn7BpvINAi',
-	client_secret='E5ptdSiVRlPluuhWFfDfnRKAgHQchRCHU9AXuVfq75iDD45NuQFXob3DwZmkqG0x',
-	api_base_url='https://fsnd79.auth0.com',
-	access_token_url='https://fsnd79.auth0.com' + '/oauth/token',
-	authorize_url='https://fsnd79.auth0.com' + '/authorize',
-	client_kwargs={
-		'scope': 'openid profile email'
-		},
-)
+# auth0 = oauth.register(
+# 	'auth0',
+# 	client_id='tQtZK49lU42FD6sRTFFnxOvn7BpvINAi',
+# 	client_secret='E5ptdSiVRlPluuhWFfDfnRKAgHQchRCHU9AXuVfq75iDD45NuQFXob3DwZmkqG0x',
+# 	api_base_url='https://fsnd79.auth0.com',
+# 	access_token_url='https://fsnd79.auth0.com' + '/oauth/token',
+# 	authorize_url='https://fsnd79.auth0.com' + '/authorize',
+# 	client_kwargs={
+# 		'scope': 'openid profile email'
+# 		},
+# )
 
 @app.after_request
 def after_request(response):
@@ -66,25 +66,25 @@ def after_request(response):
 def index():
 	return render_template('pages/home.html')
 
-@app.route('/login', methods = ['GET'])
-@cross_origin()
-def login():
-	# redirect_url = url_for("http://localhost:5000/post-login", _external=True)
-	# auth0.save_authorize_state(redirect_uri=redirect_url, state=state)
-	#return render_template('pages/home.html', token=session['jwt_token'])
-	return auth0.authorize_redirect(redirect_uri='http://localhost:5000/post-login', audience=AUTH0_AUDIENCE)
+# @app.route('/login', methods = ['GET'])
+# @cross_origin()
+# def login():
+# 	# redirect_url = url_for("http://localhost:5000/post-login", _external=True)
+# 	# auth0.save_authorize_state(redirect_uri=redirect_url, state=state)
+# 	#return render_template('pages/home.html', token=session['jwt_token'])
+# 	return auth0.authorize_redirect(redirect_uri='http://localhost:5000/post-login', audience=AUTH0_AUDIENCE)
 
-# route handler for home page once logged in
-@app.route('/post-login', methods = ['GET'])
-@cross_origin()
-def post_login():
-	# Handles response from token endpoint
-	res = auth0.authorize_access_token()
-	token = res.get('access_token')
-	# Store user info in a flask session
-	session['jwt_token'] = token
+# # route handler for home page once logged in
+# @app.route('/post-login', methods = ['GET'])
+# @cross_origin()
+# def post_login():
+# 	# Handles response from token endpoint
+# 	res = auth0.authorize_access_token()
+# 	token = res.get('access_token')
+# 	# Store user info in a flask session
+# 	session['jwt_token'] = token
 
-	return render_template('pages/home.html', token=session['jwt_token'])
+# 	return render_template('pages/home.html', token=session['jwt_token'])
 	# auth0.authorize_access_token()
 	# resp = auth0.get('userinfo')
 	# userinfo = resp.json()
@@ -100,7 +100,7 @@ def post_login():
 @app.route('/movies', methods = ['GET'])
 @cross_origin()
 @requires_auth('get:movies')
-def get_movies(jwt_token):
+def get_movies(payload):
 	movies = Movie.query.all()
 
 	movies_data = []
@@ -127,7 +127,7 @@ def create_movie_form(jwt_token):
 # route handler to create a movie record in db
 @app.route('/movies/create', methods=['POST'])
 @requires_auth('post:movies')
-def create_movie(jwt_token):
+def create_movie(payload):
 	# catch errors with try/except
 	error = False
 	# add user-submitted data and commit to db
@@ -156,7 +156,7 @@ def create_movie(jwt_token):
 # route handler to get individual movie records
 @app.route('/movies/<int:movie_id>', methods=['GET'])
 @requires_auth('get:movies')
-def get_movie_details(jwt_token, movie_id):
+def get_movie_details(payload, movie_id):
 	movie = Movie.query.get(movie_id)
 
 	if movie is None:
@@ -192,7 +192,7 @@ def get_movie_details(jwt_token, movie_id):
 # route handler to get to form to update a movie record
 @app.route('/movies/<int:movie_id>/patch', methods=['GET'])
 @requires_auth('get:movieform')
-def update_movie_form(jwt_token, movie_id):
+def update_movie_form(payload, movie_id):
 	form = MovieForm()
 	movie = Movie.query.get(movie_id)
 
@@ -214,7 +214,7 @@ def update_movie_form(jwt_token, movie_id):
 # route handler to update movie records
 @app.route('/movies/<int:movie_id>/patch', methods=['POST'])
 @requires_auth('post:movies')
-def update_movie(jwt_token, movie_id):
+def update_movie(payload, movie_id):
 	# get movie based on id
 	movie = Movie.query.get(movie_id)
 	error = False
@@ -255,7 +255,7 @@ def update_movie(jwt_token, movie_id):
 # route handler to delete movies
 @app.route('/movies/<int:movie_id>/delete', methods=['GET'])
 @requires_auth('delete:movies')
-def delete_movie(jwt_token, movie_id):
+def delete_movie(payload, movie_id):
 	# get movie to delete
 	movie = Movie.query.get(movie_id) 
 	error = False
@@ -284,7 +284,7 @@ def delete_movie(jwt_token, movie_id):
 @app.route('/actors', methods = ['GET'])
 @cross_origin()
 @requires_auth('get:actors')
-def get_actors(jwt_token):
+def get_actors(payload):
 	actors = Actor.query.all()
 
 	actors_data = []
@@ -309,7 +309,7 @@ def create_actor_form(jwt_token):
 # route handler to create an actor profile in db
 @app.route('/actors/create', methods=['POST'])
 @requires_auth('post:actors')
-def create_actor(jwt_token):
+def create_actor(payload):
 	# catch errors with try/except
 	error = False
 	# add user-submitted data and commit to db
@@ -338,7 +338,7 @@ def create_actor(jwt_token):
 # route handler to get individual actor records
 @app.route('/actors/<int:actor_id>', methods=['GET'])
 @requires_auth('get:actors')
-def get_actor_details(jwt_token, actor_id):
+def get_actor_details(payload, actor_id):
 	actor = Actor.query.get(actor_id)
 
 	if actor is None:
@@ -360,7 +360,7 @@ def get_actor_details(jwt_token, actor_id):
 # route handler to get to form to update an actor record
 @app.route('/actors/<int:actor_id>/patch', methods=['GET'])
 @requires_auth('get:actorform')
-def update_actor_form(jwt_token, actor_id):
+def update_actor_form(payload, actor_id):
 	form = ActorForm()
 	actor = Actor.query.get(actor_id)
 
@@ -381,7 +381,7 @@ def update_actor_form(jwt_token, actor_id):
 # route handler to update actor records
 @app.route('/actors/<int:actor_id>/patch', methods=['POST'])
 @requires_auth('post:actors')
-def update_actor(jwt_token, actor_id):
+def update_actor(payload, actor_id):
 	# get movie based on id
 	actor = Actor.query.get(actor_id)
 	error = False
@@ -419,7 +419,7 @@ def update_actor(jwt_token, actor_id):
 # route handler to delete actors
 @app.route('/actors/<int:actor_id>/delete', methods=['GET'])
 @requires_auth('delete:actors')
-def delete_actor(jwt_token, actor_id):
+def delete_actor(payload, actor_id):
 	# get actor to delete
 	actor = Actor.query.get(actor_id) 
 	error = False
@@ -447,7 +447,7 @@ def delete_actor(jwt_token, actor_id):
 # route handler to get to form to cast a movie
 @app.route('/cast/create', methods=['GET'])
 @requires_auth('get:castform')
-def create_cast_form(jwt_token):				
+def create_cast_form(payload):				
 	movies = Movie.query.all()
 	actors = Actor.query.all()		
 
@@ -456,7 +456,7 @@ def create_cast_form(jwt_token):
 # route handler to cast a movie in db
 @app.route('/cast/create', methods=['POST'])
 @requires_auth('post:cast')
-def create_cast(jwt_token):
+def create_cast(payload):
 	error = False
 	actor_id = request.form.get('actor_id')
 	movie_id = request.form.get('movie_id')
@@ -491,6 +491,34 @@ def create_cast(jwt_token):
 		flash('This actor was successfully booked!')
 
 	return render_template('pages/home.html')
+
+#----------------------------------------------------------------------------#
+# Error Handling
+#----------------------------------------------------------------------------#
+@app.errorhandler(404)
+def not_found_error(error):
+    return render_template('errors/404.html'), 404
+
+@app.errorhandler(500)
+def server_error(error):
+    return render_template('errors/500.html'), 500
+
+@app.errorhandler(422)
+def server_error(error):
+    return render_template('errors/422.html'), 422
+
+@app.errorhandler(400)
+def server_error(error):
+    return render_template('errors/400.html'), 400
+
+@app.errorhandler(AuthError)
+def authentification_failed(AuthError):
+	return json.dumps({
+		'success': False,
+		'error': AuthError.status_code,
+		'message': AuthError.error['description']
+		}), AuthError.status_code
+
 
 #----------------------------------------------------------------------------#
 # Launch App
