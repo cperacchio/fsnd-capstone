@@ -120,3 +120,5 @@ This casting app API includes the following endpoints. Below is an overview of t
 
 #### POST /cast/create
 - Casts an actor to an upcoming movie project by appending the actor to the movie's cast in the database
+
+### Error handling
