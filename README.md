@@ -122,3 +122,9 @@ This casting app API includes the following endpoints. Below is an overview of t
 - Casts an actor to an upcoming movie project by appending the actor to the movie's cast in the database
 
 ### Error handling
+The error codes currently returned are:
+- 400: Bad request  
+- 401: Unauthorized
+- 404: Resource not found
+- 422: Unprocessable
+- 500: Internal server error
