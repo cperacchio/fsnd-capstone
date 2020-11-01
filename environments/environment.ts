@@ -6,9 +6,9 @@ export const environment = {
 	auth0: {
 		domain: 'fsnd79',
 		audience: 'casting',
-		clientId: '2FaJjQSAtsiLqHMEfNlS0ThYQ6Oyuh9c',
+		clientId: 'tQtZK49lU42FD6sRTFFnxOvn7BpvINAi',
 		callbackURL: 'http://localhost:5000/post-login'
-		clientSecret: 'zyo8mHSRsJPhveP8t0k3ZhdapaQs5Dcl-uZBoy6fJGjnTK8jM5lq5ySIDbSC7wVo'
+		clientSecret: 'E5ptdSiVRlPluuhWFfDfnRKAgHQchRCHU9AXuVfq75iDD45NuQFXob3DwZmkqG0x'
 	}
 
 }

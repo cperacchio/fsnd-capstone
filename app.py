@@ -44,8 +44,8 @@ oauth = OAuth(app)
 
 auth0 = oauth.register(
 	'auth0',
-	client_id='2FaJjQSAtsiLqHMEfNlS0ThYQ6Oyuh9c',
-	client_secret='zyo8mHSRsJPhveP8t0k3ZhdapaQs5Dcl-uZBoy6fJGjnTK8jM5lq5ySIDbSC7wVo',
+	client_id='tQtZK49lU42FD6sRTFFnxOvn7BpvINAi',
+	client_secret='E5ptdSiVRlPluuhWFfDfnRKAgHQchRCHU9AXuVfq75iDD45NuQFXob3DwZmkqG0x',
 	api_base_url='https://fsnd79.auth0.com',
 	access_token_url='https://fsnd79.auth0.com' + '/oauth/token',
 	authorize_url='https://fsnd79.auth0.com' + '/authorize',
@@ -100,7 +100,7 @@ def post_login():
 @app.route('/movies', methods = ['GET'])
 @cross_origin()
 @requires_auth('get:movies')
-def get_movies(jwt):
+def get_movies(jwt_token):
 	movies = Movie.query.all()
 
 	movies_data = []
@@ -119,7 +119,7 @@ def get_movies(jwt):
 # route handler to get to form to create a new movie
 @app.route('/movies/create', methods=['GET'])
 @requires_auth('get:movieform')
-def create_movie_form(jwt):
+def create_movie_form(jwt_token):
 	form = MovieForm()
 	
 	return render_template('forms/new_movie.html', form=form)
@@ -127,7 +127,7 @@ def create_movie_form(jwt):
 # route handler to create a movie record in db
 @app.route('/movies/create', methods=['POST'])
 @requires_auth('post:movies')
-def create_movie(jwt):
+def create_movie(jwt_token):
 	# catch errors with try/except
 	error = False
 	# add user-submitted data and commit to db
@@ -156,7 +156,7 @@ def create_movie(jwt):
 # route handler to get individual movie records
 @app.route('/movies/<int:movie_id>', methods=['GET'])
 @requires_auth('get:movies')
-def get_movie_details(payload, movie_id):
+def get_movie_details(jwt_token, movie_id):
 	movie = Movie.query.get(movie_id)
 
 	if movie is None:
@@ -192,7 +192,7 @@ def get_movie_details(payload, movie_id):
 # route handler to get to form to update a movie record
 @app.route('/movies/<int:movie_id>/patch', methods=['GET'])
 @requires_auth('get:movieform')
-def update_movie_form(jwt, movie_id):
+def update_movie_form(jwt_token, movie_id):
 	form = MovieForm()
 	movie = Movie.query.get(movie_id)
 
@@ -214,7 +214,7 @@ def update_movie_form(jwt, movie_id):
 # route handler to update movie records
 @app.route('/movies/<int:movie_id>/patch', methods=['POST'])
 @requires_auth('post:movies')
-def update_movie(jwt, movie_id):
+def update_movie(jwt_token, movie_id):
 	# get movie based on id
 	movie = Movie.query.get(movie_id)
 	error = False
@@ -255,7 +255,7 @@ def update_movie(jwt, movie_id):
 # route handler to delete movies
 @app.route('/movies/<int:movie_id>/delete', methods=['GET'])
 @requires_auth('delete:movies')
-def delete_movie(jwt, movie_id):
+def delete_movie(jwt_token, movie_id):
 	# get movie to delete
 	movie = Movie.query.get(movie_id) 
 	error = False
@@ -284,7 +284,7 @@ def delete_movie(jwt, movie_id):
 @app.route('/actors', methods = ['GET'])
 @cross_origin()
 @requires_auth('get:actors')
-def get_actors(jwt):
+def get_actors(jwt_token):
 	actors = Actor.query.all()
 
 	actors_data = []
@@ -302,14 +302,14 @@ def get_actors(jwt):
 # route handler to get to form to create a new actor
 @app.route('/actors/create', methods=['GET'])
 @requires_auth('get:actorform')
-def create_actor_form(jwt):
+def create_actor_form(jwt_token):
 	form = ActorForm()
 	return render_template('forms/new_actor.html', form=form)
 
 # route handler to create an actor profile in db
 @app.route('/actors/create', methods=['POST'])
 @requires_auth('post:actors')
-def create_actor(jwt):
+def create_actor(jwt_token):
 	# catch errors with try/except
 	error = False
 	# add user-submitted data and commit to db
@@ -338,7 +338,7 @@ def create_actor(jwt):
 # route handler to get individual actor records
 @app.route('/actors/<int:actor_id>', methods=['GET'])
 @requires_auth('get:actors')
-def get_actor_details(jwt, actor_id):
+def get_actor_details(jwt_token, actor_id):
 	actor = Actor.query.get(actor_id)
 
 	if actor is None:
@@ -360,7 +360,7 @@ def get_actor_details(jwt, actor_id):
 # route handler to get to form to update an actor record
 @app.route('/actors/<int:actor_id>/patch', methods=['GET'])
 @requires_auth('get:actorform')
-def update_actor_form(jwt, actor_id):
+def update_actor_form(jwt_token, actor_id):
 	form = ActorForm()
 	actor = Actor.query.get(actor_id)
 
@@ -381,7 +381,7 @@ def update_actor_form(jwt, actor_id):
 # route handler to update actor records
 @app.route('/actors/<int:actor_id>/patch', methods=['POST'])
 @requires_auth('post:actors')
-def update_actor(jwt, actor_id):
+def update_actor(jwt_token, actor_id):
 	# get movie based on id
 	actor = Actor.query.get(actor_id)
 	error = False
@@ -419,7 +419,7 @@ def update_actor(jwt, actor_id):
 # route handler to delete actors
 @app.route('/actors/<int:actor_id>/delete', methods=['GET'])
 @requires_auth('delete:actors')
-def delete_actor(jwt, actor_id):
+def delete_actor(jwt_token, actor_id):
 	# get actor to delete
 	actor = Actor.query.get(actor_id) 
 	error = False
@@ -447,7 +447,7 @@ def delete_actor(jwt, actor_id):
 # route handler to get to form to cast a movie
 @app.route('/cast/create', methods=['GET'])
 @requires_auth('get:castform')
-def create_cast_form(jwt):				
+def create_cast_form(jwt_token):				
 	movies = Movie.query.all()
 	actors = Actor.query.all()		
 
@@ -456,7 +456,7 @@ def create_cast_form(jwt):
 # route handler to cast a movie in db
 @app.route('/cast/create', methods=['POST'])
 @requires_auth('post:cast')
-def create_cast(jwt):
+def create_cast(jwt_token):
 	error = False
 	actor_id = request.form.get('actor_id')
 	movie_id = request.form.get('movie_id')

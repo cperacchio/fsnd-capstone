@@ -5,6 +5,10 @@ from flask_sqlalchemy import SQLAlchemy
 from app import create_app
 from models import setup_db, Movie, Actor
 
+# Tokens are below (once I figure out how to get them)
+# casting_assistant = ('')
+# executive_producer = ('')
+
 class CapstoneTestCase(unittest.TestCase):
 	"""This class represents the test case"""
 
@@ -24,17 +28,17 @@ class CapstoneTestCase(unittest.TestCase):
 			self.db.create_all()
 
 		self.test_movie = {
-			'name': 'The Pink Panther 3'
-			'director': 'Bradley Cooper'
-			'genre': 'Comedy'
-			'release_year': '2023'
+			'name': 'The Pink Panther 3',
+			'director': 'Bradley Cooper',
+			'genre': 'Comedy',
+			'release_year': '2023',
 			'rating': 'PG-13'
 		}
 		
 		self.test_actor = {
-			'name': 'Steve Martin'
-			'age': '75'
-			'gender': 'Male'
+			'name': 'Steve Martin',
+			'age': '75',
+			'gender': 'Male',
 			'image_link': 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/Steve_Martin%2C_2017-08-11.jpg/220px-Steve_Martin%2C_2017-08-11.jpg'
 		}
 	
@@ -63,6 +67,14 @@ class CapstoneTestCase(unittest.TestCase):
 		self.assertEqual(res.status_code, 404)
 		self.assertEqual(data['success'], False)
 		self.assertEqual(data['message'], 'Not found')
+
+	# RBAC test demonstrating casting assistant can get all movies
+	def test_get_movies_by_casting_assistant(self):
+		res = self.client().get(
+			'/movies', headers={'Authorization': 'Bearer ' + casting_assistant})
+		data = res.json
+		self.assertEqual(res.status_code, 200)
+		self.assertEqual(data['success'], True)
 
 	def test_create_movie_form():
 		res = self.client().get('/movies/create')
@@ -103,6 +115,17 @@ class CapstoneTestCase(unittest.TestCase):
 		self.assertEqual(res.status_code, 405)
 		self.assertEqual(data['success'], False)
 		self.assertEqual(data['message'], 'Method not allowed')
+
+	# RBAC test demonstrating executive producer can create a movie
+	def test_create_movie_by_exec_producer(self):
+		res = self.client().post(
+			'/movies/create', 
+			json=new_movie,
+			headers={'Authorization': 'Bearer ' + executive_producer}
+		)
+		data = json.loads(res.data)
+		self.assertEqual(res.status_code, 200)
+		self.assertEqual(data['success'], True)
 
 	def test_get_movie_details():
 		res = self.client().get('/movies/{id}')
@@ -190,6 +213,14 @@ class CapstoneTestCase(unittest.TestCase):
 		self.assertEqual(data['success'], False)
 		self.assertEqual(data['message'], 'Not found')
 
+	# RBAC test demonstrating casting assistant can get all actors
+	def test_get_actors_by_casting_assistant(self):
+		res = self.client().get(
+			'/actors', headers={'Authorization': 'Bearer ' + casting_assistant})
+		data = res.json
+		self.assertEqual(res.status_code, 200)
+		self.assertEqual(data['success'], True)
+
 	def test_create_actor_form():
 		res = self.client().get('/actors/create')
 		data = json.loads(res.data)
@@ -205,9 +236,9 @@ class CapstoneTestCase(unittest.TestCase):
 
 	def test_create_actor(self):
 		new_actor = {
-			'name': 'Steve Martin'
-			'age': '75'
-			'gender': 'Male'
+			'name': 'Steve Martin',
+			'age': '75',
+			'gender': 'Male',
 			'image_link': 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/Steve_Martin%2C_2017-08-11.jpg/220px-Steve_Martin%2C_2017-08-11.jpg'
 		}
 		res = self.client().post('/actors/create', json=new_actor)
@@ -217,9 +248,9 @@ class CapstoneTestCase(unittest.TestCase):
 
 	def test_create_actor(self):
 		new_actor = {
-			'name': 'Steve Martin'
-			'age': '75'
-			'gender': 'Male'
+			'name': 'Steve Martin',
+			'age': '75',
+			'gender': 'Male',
 			'image_link': 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/Steve_Martin%2C_2017-08-11.jpg/220px-Steve_Martin%2C_2017-08-11.jpg'
 		}
 		res = self.client().post('/actors/create', json=new_actor)
@@ -227,6 +258,17 @@ class CapstoneTestCase(unittest.TestCase):
 		self.assertEqual(res.status_code, 405)
 		self.assertEqual(data['success'], False)
 		self.assertEqual(data['message'], 'Method not allowed')
+
+	# RBAC test demonstrating executive producer can create an actor
+	def test_create_actor_by_exec_producer(self):
+		res = self.client().post(
+			'/actors/create', 
+			json=new_actor,
+			headers={'Authorization': 'Bearer ' + executive_producer}
+		)
+		data = json.loads(res.data)
+		self.assertEqual(res.status_code, 200)
+		self.assertEqual(data['success'], True)
 
 	def test_get_actor_details():
 		res = self.client().get('/actors/{id}')
@@ -256,9 +298,9 @@ class CapstoneTestCase(unittest.TestCase):
 
 	def test_update_actor(self):
 		updated_actor = {
-			'name': 'Steve Martin'
-			'age': '75'
-			'gender': 'Male'
+			'name': 'Steve Martin',
+			'age': '75',
+			'gender': 'Male',
 			'image_link': 'https://images.unsplash.com/photo-1596618813198-c1f7ae5827c8?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1189&q=80'
 		}
 		res = self.client().post('/actors/{id}/patch', json=updated_actor)
@@ -268,9 +310,9 @@ class CapstoneTestCase(unittest.TestCase):
 
 	def test_update_actor(self):
 		updated_actor = {
-			'name': 'Steve Martin'
-			'age': '75'
-			'gender': 'Male'
+			'name': 'Steve Martin',
+			'age': '75',
+			'gender': 'Male',
 			'image_link': 'https://images.unsplash.com/photo-1596618813198-c1f7ae5827c8?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1189&q=80'
 		}
 		res = self.client().post('/actors/{id}/patch', json=updated_actor)
