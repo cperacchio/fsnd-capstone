@@ -11,6 +11,8 @@ The app has a page where movies projects are listed and a page where actor profi
 - Keep track of upcoming movie projects, actor profiles, and casting information, all in one place
 - Control who can view, create, update, or delete casting information based on their role at the agency
 
+![alt text](https://github.com/cperacchio/fsnd-capstone/blob/static/img/landing_page.jpg?raw=true)
+
 ## Skills covered
 - Coding in Python 3
 - Relational database architecture
