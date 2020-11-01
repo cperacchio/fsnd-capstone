@@ -65,7 +65,7 @@ Password: Auth0123!
 2. <strong>Executive producer</strong>: Full access, with the ability to view, list, update, and delete both movie projects and actors
 ```
 Sample executive producer login credentials
-User: shanrhymes@gmail.com
+User: shanna.rhymes@gmail.com
 Password: Auth0123!
 ```
 
