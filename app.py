@@ -119,7 +119,7 @@ def get_movies(payload):
 # route handler to get to form to create a new movie
 @app.route('/movies/create', methods=['GET'])
 @requires_auth('get:movieform')
-def create_movie_form(jwt_token):
+def create_movie_form(payload):
 	form = MovieForm()
 	
 	return render_template('forms/new_movie.html', form=form)
@@ -302,7 +302,7 @@ def get_actors(payload):
 # route handler to get to form to create a new actor
 @app.route('/actors/create', methods=['GET'])
 @requires_auth('get:actorform')
-def create_actor_form(jwt_token):
+def create_actor_form(payload):
 	form = ActorForm()
 	return render_template('forms/new_actor.html', form=form)
 
