@@ -62,10 +62,10 @@ class AuthError(Exception):
     return true otherwise
 '''
 def check_permissions(permission, payload):
-    if 'permissions' not in payload:
+    if permission not in payload['permissions']:
         abort(400)
 
-    if 'permission' not in payload['permissions']:
+    if permission not in payload['permissions']:
         raise AuthError({
             'success': False,
             'message': 'Permission not found in JWT',
@@ -168,15 +168,26 @@ def requires_auth(permission=''):
         @wraps(f)
         def wrapper(*args, **kwargs):
             try:
-                token = request.cookies.get('user_token')
+                token = None
+                if session['token']:
+                    token=session['token']
+                else:
+                    token=get_token_auth_header()
+                    print('token at authorization time: {}'.format(token))
+                # token = request.cookies.get('user_token')
                 if token is None:
                     abort(400)
-                payload = verify_decode_jwt(token)
-                check_permissions(permission, payload)
-                return f(payload, *args, **kwargs)
+                    payload = verify_decode_jwt(token)
+                    print('Payload is: {}'.format(payload))
+                    print(f'testing for permission: {permission}')
+                if check_permissions(permission, payload):
+                    print('Permission is in permissions!')
+                # check_permissions(permission, payload)    
+            
+            return f(payload, *args, **kwargs)
+            
             except Exception:
                 abort(401)
-
 
         return wrapper
     return requires_auth_decorator
