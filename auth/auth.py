@@ -173,18 +173,18 @@ def requires_auth(permission=''):
                     token=session['token']
                 else:
                     token=get_token_auth_header()
-                    print('token at authorization time: {}'.format(token))
+                    #print('token at authorization time: {}'.format(token))
                 # token = request.cookies.get('user_token')
                 if token is None:
                     abort(400)
-                    payload = verify_decode_jwt(token)
-                    print('Payload is: {}'.format(payload))
-                    print(f'testing for permission: {permission}')
+                payload = verify_decode_jwt(token)
+                #print('Payload is: {}'.format(payload))
+                #print(f'testing for permission: {permission}')
                 if check_permissions(permission, payload):
                     print('Permission is in permissions!')
                 # check_permissions(permission, payload)    
             
-            return f(payload, *args, **kwargs)
+                return f(payload, *args, **kwargs)
             
             except Exception:
                 abort(401)

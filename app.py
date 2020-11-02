@@ -40,7 +40,7 @@ app = create_app()
 # Controllers.
 #----------------------------------------------------------------------------#
 # auth0 info
-# oauth = OAuth(app)
+oauth = OAuth(app)
 
 auth0 = oauth.register(
 	'auth0',
