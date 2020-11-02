@@ -34,8 +34,8 @@ class AuthError(Exception):
     return the token part of the header
 '''
 def get_token_auth_header():
-#     """Obtains the Access Token from the Authorization Header
-#     """
+    """Obtains the Access Token from the Authorization Header
+    """
     if "Authorization" in request.headers:
         auth_header = request.headers["Authorization"]
         if auth_header:
@@ -55,6 +55,7 @@ def get_token_auth_header():
     @INPUTS
         permission: string permission (i.e. 'post:drink')
         payload: decoded jwt payload
+
     it should raise an AuthError if permissions are not included in the payload
         !!NOTE check your RBAC settings in Auth0
     it should raise an AuthError if the requested permission string is not in the payload permissions array
@@ -62,7 +63,7 @@ def get_token_auth_header():
 '''
 def check_permissions(permission, payload):
     if 'permissions' not in payload:
-        print('permissions not in payload')
+        print('Permissions not in payload')
         abort(400)
 
     if permission not in payload['permissions']:
@@ -72,29 +73,29 @@ def check_permissions(permission, payload):
             'message': 'Permission not found in JWT',
             'error': 401
         }, 401)
-    
     return True
 
 '''
 @TODO implement verify_decode_jwt(token) method
     @INPUTS
         token: a json web token (string)
+
     it should be an Auth0 token with key id (kid)
     it should verify the token using Auth0 /.well-known/jwks.json
     it should decode the payload from the token
     it should validate the claims
     return the decoded payload
+
     !!NOTE urlopen has a common certificate error described here: https://stackoverflow.com/questions/50236117/scraping-ssl-certificate-verify-failed-error-for-http-en-wikipedia-org
 '''
 def verify_decode_jwt(token):
     # GET THE PUBLIC KEY FROM AUTH0
-    print(f'https://{AUTH0_DOMAIN}/.well-known/jwks.json')
     jsonurl = urlopen(f'https://{AUTH0_DOMAIN}/.well-known/jwks.json')
     jwks = json.loads(jsonurl.read())
-    
+
     # GET THE DATA IN THE HEADER
     unverified_header = jwt.get_unverified_header(token)
-    print 
+ 
     # CHOOSE OUR KEY
     rsa_key = {}
     if 'kid' not in unverified_header:
@@ -116,7 +117,6 @@ def verify_decode_jwt(token):
 
     # Finally, verify!!!
     if rsa_key:
-        print('rsa_key exists')
         try:
             # USE THE KEY TO VALIDATE THE JWT
             payload = jwt.decode(
@@ -124,9 +124,9 @@ def verify_decode_jwt(token):
                 rsa_key,
                 algorithms=ALGORITHMS,
                 audience=API_AUDIENCE,
-                issuer=f'https://{AUTH0_DOMAIN}/'
+                issuer='https://{AUTH0_DOMAIN}/'
             )
-            
+
             return payload
 
         except jwt.ExpiredSignatureError:
@@ -172,22 +172,24 @@ def requires_auth(permission=''):
             try:
                 token = None
                 if session['token']:
-                    token = session['token']
+                    token=session['token']
                 else:
-                    token = get_token_auth_header()
-                print('token at authorization time: {}'.format(token))
+                    token=get_token_auth_header()
+                    #print('token at authorization time: {}'.format(token))
+                # token = request.cookies.get('user_token')
                 if token is None:
                     abort(400)
                 payload = verify_decode_jwt(token)
-                print('Payload is: {}'.format(payload))
-                print(f'testing for permission: {permission}')
+                #print('Payload is: {}'.format(payload))
+                #print(f'testing for permission: {permission}')
                 if check_permissions(permission, payload):
                     print('Permission is in permissions!')
-                
+                # check_permissions(permission, payload)    
+            
                 return f(payload, *args, **kwargs)
+            
             except Exception:
                 abort(401)
-
 
         return wrapper
     return requires_auth_decorator

@@ -43,15 +43,15 @@ app = create_app()
 oauth = OAuth(app)
 
 auth0 = oauth.register(
-	'auth0',
-	client_id='tQtZK49lU42FD6sRTFFnxOvn7BpvINAi',
-	client_secret='E5ptdSiVRlPluuhWFfDfnRKAgHQchRCHU9AXuVfq75iDD45NuQFXob3DwZmkqG0x',
-	api_base_url='https://fsnd79.auth0.com',
-	access_token_url='https://fsnd79.auth0.com' + '/oauth/token',
-	authorize_url='https://fsnd79.auth0.com' + '/authorize',
-	client_kwargs={
-		'scope': 'openid profile email'
-		},
+    'auth0',
+    client_id='tQtZK49lU42FD6sRTFFnxOvn7BpvINAi',
+    client_secret='E5ptdSiVRlPluuhWFfDfnRKAgHQchRCHU9AXuVfq75iDD45NuQFXob3DwZmkqG0x',
+    api_base_url='https://fsnd79.auth0.com',
+    access_token_url='https://fsnd79.auth0.com' + '/oauth/token',
+    authorize_url='https://fsnd79.auth0.com' + '/authorize',
+    client_kwargs={
+        'scope': 'openid profile email'
+            }
 )
 
 @app.after_request
@@ -69,22 +69,25 @@ def index():
 @app.route('/login', methods = ['GET'])
 @cross_origin()
 def login():
-	print('Audience: {}'.format(AUTH0_AUDIENCE))
-	return auth0.authorize_redirect(redirect_uri='http://localhost:5000/post-login', audience=AUTH0_AUDIENCE)
-	
-	# redirect_url = url_for("http://localhost:5000/post-login", _external=True)
-	# auth0.save_authorize_state(redirect_uri=redirect_url, state=state)
-	#return render_template('pages/home.html', token=session['jwt_token'])
-	# return auth0.authorize_redirect(redirect_uri='http://localhost:5000/post-login', audience=AUTH0_AUDIENCE)
+    print('Audience: {}'.format(AUTH0_AUDIENCE)) 
+    return auth0.authorize_redirect(redirect_uri='http://localhost:5000/post-login', audience=AUTH0_AUDIENCE)
 
-# # route handler for home page once logged in
+# route handler for home page once logged in
 @app.route('/post-login', methods = ['GET'])
 @cross_origin()
-def post_login():
-	token = auth0.authorize_access_token()
-	session['token'] = token['access_token']
-	print(session['token'])
-	return render_template('pages/home.html')
+def post_login(): 
+    token = auth0.authorize_access_token()
+    session['token'] = token['access_token']
+    print(session['token'])
+    return render_template('pages/home.html')
+	# auth0.authorize_access_token()
+	# resp = auth0.get('userinfo')
+	# userinfo = resp.json()
+	# session[constants.JWT_PAYLOAD] = userinfo
+	# session[constants.PROFILE_KEY] = {
+	# 	'user_id': userinfo['sub'],
+	# 	'name': userinfo['name']
+	# 	}
 
 # @app.route('/post-login', methods = ['GET'])
 # @cross_origin()
