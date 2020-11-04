@@ -50,7 +50,7 @@ $ flask run --reload
 
 ## Link to app deployed on Heroku
 ```
-Coming soon!
+https://fsnd-capstone-cperacchio.herokuapp.com/
 ```
 
 ## Usage
