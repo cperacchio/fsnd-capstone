@@ -29,6 +29,7 @@ The app has a page where movies projects are listed and a page where actor profi
 ## Dependencies
 To access it, you need to activate a virtual environment and install the dependencies:
 1. Activate a virtual environment:
+
 ```
 $ cd PROJECT_DIRECTORY_PATH/
 $ virtualenv env
