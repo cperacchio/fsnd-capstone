@@ -74,7 +74,10 @@ def index():
 @cross_origin()
 def login():
     print('Audience: {}'.format(AUTH0_AUDIENCE)) 
-    return auth0.authorize_redirect(redirect_uri='http://localhost:5000/post-login', audience=AUTH0_AUDIENCE)
+    return auth0.authorize_redirect(
+    	redirect_uri='%s/post-login' %  AUTH0_CALLBACK_URL, 
+    	audience=AUTH0_AUDIENCE
+	)
 
 # route handler for home page once logged in
 @app.route('/post-login', methods = ['GET'])
