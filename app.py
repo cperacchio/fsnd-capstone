@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------#
 import os
 import requests
-from flask import Flask, request, abort, jsonify, render_template, session, flash, make_response, Response, url_for
+from flask import Flask, request, abort, jsonify, render_template, session, flash, make_response, Response, url_for, redirect
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS, cross_origin
 from models import setup_db, Movie, Actor
@@ -11,6 +11,8 @@ import simplejson as json
 from auth.auth import requires_auth, AuthError 
 from forms import MovieForm, ActorForm
 from authlib.integrations.flask_client import OAuth
+from six.moves.urllib.parse import urlencode
+from config import SECRET_KEY
 
 AUTH0_CALLBACK_URL = os.getenv('AUTH0_CALLBACK_URL')
 AUTH0_CLIENT_ID = os.getenv('AUTH0_CLIENT_ID')
@@ -27,8 +29,9 @@ AUTH0_AUDIENCE = os.getenv('AUTH0_AUDIENCE')
 def create_app(test_config=None):
 	# create and configure the app
   	app = Flask(__name__)
-  	app.secret_key = "very secret key"
-  	#app.config['SECRET_KEY'] = 'very_secret_key'
+  	
+  	app.secret_key = SECRET_KEY
+  	app.config['SECRET_KEY'] = SECRET_KEY
   	setup_db(app)
   	CORS(app)
 
@@ -44,9 +47,9 @@ oauth = OAuth(app)
 
 auth0 = oauth.register(
     'auth0',
-    client_id='tQtZK49lU42FD6sRTFFnxOvn7BpvINAi',
-    client_secret='E5ptdSiVRlPluuhWFfDfnRKAgHQchRCHU9AXuVfq75iDD45NuQFXob3DwZmkqG0x',
-    api_base_url='https://fsnd79.auth0.com',
+    client_id=AUTH0_CLIENT_ID,
+    client_secret=AUTH0_CLIENT_SECRET,
+    api_base_url=AUTH0_BASE_URL,
     access_token_url='https://fsnd79.auth0.com' + '/oauth/token',
     authorize_url='https://fsnd79.auth0.com' + '/authorize',
     client_kwargs={
@@ -66,6 +69,7 @@ def after_request(response):
 def index():
 	return render_template('pages/home.html')
 
+# route handler to log in
 @app.route('/login', methods = ['GET'])
 @cross_origin()
 def login():
@@ -80,33 +84,15 @@ def post_login():
     session['token'] = token['access_token']
     print(session['token'])
     return render_template('pages/home.html')
-	# auth0.authorize_access_token()
-	# resp = auth0.get('userinfo')
-	# userinfo = resp.json()
-	# session[constants.JWT_PAYLOAD] = userinfo
-	# session[constants.PROFILE_KEY] = {
-	# 	'user_id': userinfo['sub'],
-	# 	'name': userinfo['name']
-	# 	}
 
-# @app.route('/post-login', methods = ['GET'])
-# @cross_origin()
-# def post_login():
-# 	# Handles response from token endpoint
-# 	res = auth0.authorize_access_token()
-# 	token = res.get('access_token')
-# 	# Store user info in a flask session
-# 	session['jwt_token'] = token
-
-# 	return render_template('pages/home.html', token=session['jwt_token'])
-	# auth0.authorize_access_token()
-	# resp = auth0.get('userinfo')
-	# userinfo = resp.json()
-	# session[constants.JWT_PAYLOAD] = userinfo
-	# session[constants.PROFILE_KEY] = {
-	# 	'user_id': userinfo['sub'],
-	# 	'name': userinfo['name']
-	# 	}
+# route handler to log out
+@app.route('/logout')
+def log_out():
+	# clear the session
+	session.clear()
+	# redirect user to logout endpoint
+	params = {'returnTo': url_for('index', _external=True), 'client_id': AUTH0_CLIENT_ID}
+	return redirect('https://fsnd79.auth0.com' + '/v2/logout?' + urlencode(params))
 
 #  Movies
 #  ----------------------------------------------------------------
@@ -509,21 +495,25 @@ def create_cast(payload):
 #----------------------------------------------------------------------------#
 # Error Handling
 #----------------------------------------------------------------------------#
+@app.errorhandler(400)
+def bad_request_error(error):
+    return render_template('errors/400.html'), 400
+
+@app.errorhandler(401)
+def unauthorized_error(error):
+    return render_template('errors/401.html'), 401
+
 @app.errorhandler(404)
 def not_found_error(error):
     return render_template('errors/404.html'), 404
 
+@app.errorhandler(422)
+def not_processable_error(error):
+    return render_template('errors/422.html'), 422
+
 @app.errorhandler(500)
 def server_error(error):
     return render_template('errors/500.html'), 500
-
-@app.errorhandler(422)
-def server_error(error):
-    return render_template('errors/422.html'), 422
-
-@app.errorhandler(400)
-def server_error(error):
-    return render_template('errors/400.html'), 400
 
 @app.errorhandler(AuthError)
 def authentification_failed(AuthError):
