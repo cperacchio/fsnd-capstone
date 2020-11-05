@@ -49,10 +49,9 @@ $ flask run --reload
 ```
 
 ## Heroku link
-The casting app has been deployed to Heroku and is currently working at this link.  
-```
+The casting app has been deployed to Heroku and is currently working at this link. To log in, head to /login and enter one of the credentials below. To log out, just go to /logout.
+
 [https://fsnd-capstone-cperacchio.herokuapp.com/](https://fsnd-capstone-cperacchio.herokuapp.com/)
-```
 
 ## Usage
 
@@ -61,14 +60,14 @@ Users can access the app's homepage anonymously and its functionality via two ro
 
 1. <strong>Casting assistant</strong>: Can view upcoming movie projects and listed actors and see details about both
 ```
-Sample casting assistant login credentials
+Casting assistant login credentials
 User: fyyur.casting.assistant@gmail.com
 Password: Auth0123!
 ```
 
 2. <strong>Executive producer</strong>: Full access, with the ability to view, list, update, and delete both movie projects and actors
 ```
-Sample executive producer login credentials
+Executive producer login credentials
 User: shanna.rhymes@gmail.com
 Password: Auth0123! 
 ```
