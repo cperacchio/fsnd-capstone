@@ -78,6 +78,9 @@ This casting app API includes the following endpoints. Below is an overview of t
 #### GET /login
 - Redirects the user to the Auth0 login page, where the user can log in or sign up
 
+#### GET /post-login
+- Handles the response from the access token endpoint and stores the user's information in a Flask session
+
 #### GET /logout
 - Clears the user's session and logs them out
 
