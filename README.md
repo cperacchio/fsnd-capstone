@@ -78,6 +78,9 @@ This casting app API includes the following endpoints. Below is an overview of t
 #### GET /login
 - Redirects the user to the Auth0 login page, where the user can log in or sign up
 
+#### GET /logout
+- Clears the user's session and logs them out
+
 #### GET /movies
 - Returns a list of all the movie projects in the database
 
@@ -127,3 +130,4 @@ The error codes currently returned are:
 - 404: Resource not found
 - 422: Unprocessable
 - 500: Internal server error
+- AuthError: Returns Auth0 error status code and description

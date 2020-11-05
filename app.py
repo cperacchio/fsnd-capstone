@@ -24,8 +24,6 @@ AUTH0_AUDIENCE = os.getenv('AUTH0_AUDIENCE')
 #----------------------------------------------------------------------------#
 # Initialize App 
 #----------------------------------------------------------------------------#
-#SECRET_KEY = os.urandom(32)
-
 def create_app(test_config=None):
 	# create and configure the app
   	app = Flask(__name__)
