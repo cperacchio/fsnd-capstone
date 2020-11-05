@@ -48,9 +48,10 @@ $ export FLASK_ENV=development # enables debug mode
 $ flask run --reload
 ```
 
-## Link to app deployed on Heroku
+## Heroku link
+The casting app has been deployed to Heroku and is currently working at this link.  
 ```
-https://fsnd-capstone-cperacchio.herokuapp.com/
+<https://fsnd-capstone-cperacchio.herokuapp.com/>
 ```
 
 ## Usage
@@ -133,4 +134,4 @@ The error codes currently returned are:
 - 404: Resource not found
 - 422: Unprocessable
 - 500: Internal server error
-- AuthError: Returns Auth0 error status code and description
+- AuthError: Auth0 error status code and description
