@@ -51,7 +51,7 @@ $ flask run --reload
 ## Heroku link
 The casting app has been deployed to Heroku and is currently working at this link.  
 ```
-<https://fsnd-capstone-cperacchio.herokuapp.com/>
+[https://fsnd-capstone-cperacchio.herokuapp.com/](https://fsnd-capstone-cperacchio.herokuapp.com/)
 ```
 
 ## Usage
