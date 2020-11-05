@@ -11,6 +11,11 @@ The app has a page where movies projects are listed and a page where actor profi
 - Keep track of upcoming movie projects, actor profiles, and casting information, all in one place
 - Control who can view, create, update, or delete casting information based on their role at the agency
 
+#### How can I access the app?
+The casting app has been deployed to Heroku and is currently working at this link. To log in, add /login to the url and enter one set of credentials below. To log out, just go to /logout.
+
+[https://fsnd-capstone-cperacchio.herokuapp.com/](https://fsnd-capstone-cperacchio.herokuapp.com/)
+
 ![homepage](https://github.com/cperacchio/fsnd-capstone/blob/main/static/img/new_landing_page.png?raw=true)
 
 ## Skills covered
@@ -27,7 +32,7 @@ The app has a page where movies projects are listed and a page where actor profi
 - Deploying applications
 
 ## Dependencies
-To access it, you need to activate a virtual environment and install the dependencies:
+To access it locally, you need to activate a virtual environment and install the dependencies:
 1. Activate a virtual environment:
 
 ```
@@ -47,11 +52,6 @@ $ export FLASK_APP=app.py
 $ export FLASK_ENV=development # enables debug mode  
 $ flask run --reload
 ```
-
-## Heroku link
-The casting app has been deployed to Heroku and is currently working at this link. To log in, head to /login and enter one of the credentials below. To log out, just go to /logout.
-
-[https://fsnd-capstone-cperacchio.herokuapp.com/](https://fsnd-capstone-cperacchio.herokuapp.com/)
 
 ## Usage
 
