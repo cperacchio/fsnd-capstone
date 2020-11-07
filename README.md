@@ -13,9 +13,7 @@ The app has a page where movie projects are listed and a page where actor profil
 
 #### How can I access the app?
 The casting app has been deployed to Heroku and is currently working at this link: 
-```
-[https://fsnd-capstone-cperacchio.herokuapp.com](https://fsnd-capstone-cperacchio.herokuapp.com/)
-```
+<strong>[https://fsnd-capstone-cperacchio.herokuapp.com](https://fsnd-capstone-cperacchio.herokuapp.com/)</strong>
 
 To log in, add /login to the url and enter one set of credentials shown below. To log out, just go to /logout.
 
@@ -35,7 +33,7 @@ To log in, add /login to the url and enter one set of credentials shown below. T
 - Deploying applications
 
 ## Dependencies
-To access the app locally, you need a database, a virtual environment, dependencies installed, and environment variables set up. You also need an account with Auth0, the authentication service I used to secure this app and its API.
+To access the app locally, you need a database, a virtual environment, dependencies installed, and environment variables set up. You also need an account with Auth0, an authentication service.
 
 1. This app runs on a PostgreSQL database. You can download PostgreSQL at [postgresql.org](https://www.postgresql.org/download/).
 2. Then head to [Auth0.com](https://auth0.com/) to create an account.
