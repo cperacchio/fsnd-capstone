@@ -45,7 +45,7 @@ $ source env/bin/activate
 ```
 4. Install the dependencies for this project and set up environment variables:
 ```
-source setup.sh
+$ source setup.sh
 ```
 
 ## Setup
