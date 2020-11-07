@@ -12,7 +12,7 @@ The app has a page where movie projects are listed and a page where actor profil
 - Control who can view, create, update, or delete casting information based on their role at the agency
 
 #### How can I access the app?
-The casting app has been deployed to Heroku and is currently working at this link: 
+The casting app has been deployed to Heroku and is currently working at this link:</br> 
 <strong>[https://fsnd-capstone-cperacchio.herokuapp.com](https://fsnd-capstone-cperacchio.herokuapp.com/)</strong>
 
 To log in, add /login to the url and enter one set of credentials shown below. To log out, just go to /logout.
