@@ -13,8 +13,9 @@ The app has a page where movie projects are listed and a page where actor profil
 
 #### How can I access the app?
 The casting app has been deployed to Heroku and is currently working at this link: 
-
+```
 [https://fsnd-capstone-cperacchio.herokuapp.com](https://fsnd-capstone-cperacchio.herokuapp.com/)
+```
 
 To log in, add /login to the url and enter one set of credentials shown below. To log out, just go to /logout.
 
@@ -34,26 +35,28 @@ To log in, add /login to the url and enter one set of credentials shown below. T
 - Deploying applications
 
 ## Dependencies
-To access the app locally, you need to create a database, activate a virtual environment, install the dependencies, and set up environment variables. You also need an account with Auth0, the authentication service I used to secure this app and its API.
+To access the app locally, you need a database, a virtual environment, dependencies installed, and environment variables set up. You also need an account with Auth0, the authentication service I used to secure this app and its API.
 
-1. This app runs on a PostgreSQL database. You can create one locally and connect to it from setup.sh:
-```
-export DATABASE_URL='postgresql://your_user_name@localhost:XXXX/your_db_name'
-```
-2. Activate a virtual environment:
+1. This app runs on a PostgreSQL database. You can download PostgreSQL at [postgresql.org](https://www.postgresql.org/download/).
+2. Then head to [Auth0.com](https://auth0.com/) to create an account.
+3. Next, activate a virtual environment:
 ```
 $ cd project_directory_path/
 $ virtualenv env
 $ source env/bin/activate
 ```
-3. Install the dependencies for this project and set up environment variables:
+4. Install the dependencies for this project and set up environment variables:
 ```
 source setup.sh
 ```
-4. Head to Auth0.com to create an account and configure the settings for a single-page web application and this API. You'll need to use the environment variables in setup.sh for this.
 
 ## Setup
-Next, you need to start the development server:  
+1. Create a PostgreSQL database locally and connect to it from setup.sh:
+```
+export DATABASE_URL='postgresql://your_user_name@localhost:XXXX/your_db_name'
+```
+2. In Auth0, configure a single page web application and its API, relying on the environment variables in setup.sh.
+3. Start the development server:  
 ```
 $ export FLASK_APP=app.py 
 $ export FLASK_ENV=development # enables debug mode  
@@ -80,7 +83,7 @@ Password: Auth0123!
 ```
 
 ### API endpoints
-To access this app's API, a user would need to be authenticated. Logging in with approved credentials generates a JWT (JSON Web Token) that grants the user access based on their role's permissions.
+To access this app's API, a user needs to be authenticated. Logging in with approved credentials generates a JWT (JSON Web Token) that grants the user access based on their role's permissions.
 
 The casting app API includes the following endpoints. Below is an overview of their expected behavior.
 
@@ -135,7 +138,7 @@ The casting app API includes the following endpoints. Below is an overview of th
 - Sample: ```curl http://127.0.0.1:5000/movies/create -X POST -H "Content-Type: application/json" -d '{ "name": "A Star is Born 2", "director": "Bradley Cooper", "genre": "Musical", "release_year": 2023, "rating": "R"}'```
 
 #### POST /actors/create
-- Adds a new actor profile to the database, including the actor's name, age, and gender
+- Adds a new actor profile to the database, including the actor's name, age, gender, and profile image
 - Roles authorized: executive producer
 - Sample: ```curl http://127.0.0.1:5000/actors -X POST -H "Content-Type: application/json" -d '{ "name": "Ana de Armas", "age": 32, "gender": "Female", "image_link": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1c/Ana_de_Armas_by_Gage_Skidmore.jpg/220px-Ana_de_Armas_by_Gage_Skidmore.jpg"}'```
 
@@ -155,7 +158,7 @@ The casting app API includes the following endpoints. Below is an overview of th
 - Sample: ```curl http://127.0.0.1:5000/movies/1 -X POST -H "Content-Type: application/json" -d '{ "name": "A Star is Born 2", "director": "Lady Gaga", "genre": "Comedy", "release_year": 2024, "rating": "R"}'```
 
 #### GET /actors/{actor_id}/patch
-- Updates an existing actor profile, with revised details related to the actor's name, age, or gender
+- Updates an existing actor profile, with revised details related to the actor's name, age, gender, or profile image
 - Roles authorized: executive producer
 - Sample: ```curl http://127.0.0.1:5000/actors/1 -X POST -H "Content-Type: application/json" -d '{ "name": "Ana de Armas", "age": 32, "gender": "Female" , "image_link": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/62/Ana_de_Armas_GQ_2018_2.png/165px-Ana_de_Armas_GQ_2018_2.png"}'```
 
@@ -170,12 +173,12 @@ The casting app API includes the following endpoints. Below is an overview of th
 - Sample: ```curl http://127.0.0.1:5000/actors/1/delete```
 
 #### GET /cast/create
-- Returns the form to cast an actor to a movie project
+- Returns the form to cast an actor for a movie project
 - Roles authorized: executive producer
 - Sample: ```curl http://127.0.0.1:5000/cast/create```
 
 #### POST /cast/create
-- Casts an actor to an upcoming movie project by appending the actor to the movie's cast in the database
+- Casts an actor for an upcoming movie project by appending the actor to the movie's cast in the database
 - Roles authorized: executive producer
 - Sample: ```curl http://127.0.0.1:5000/cast/create -X POST -H "Content-Type: application/json" -d '{ "name": "The Pink Panther 2", "director": "Nancy Meyers", "genre": "Action", "release_year": 2022, "rating": "G", "cast": "Ana de Armas"}'```
 
