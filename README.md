@@ -22,7 +22,7 @@ To log in, add /login to the url and enter one set of credentials shown below. T
 #### System architecture
 The diagram below illustrates how the different components of the Movie Casting App interact.
 
-![Movie Casting App Architecture](images/movie_casting_architecture.jpeg)
+![Movie Casting App Architecture](images/movie_casting_architecture.jpg)
 
 Each color represents a different type of operation flowing through the system:
 - Green: Create operations
