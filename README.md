@@ -19,6 +19,19 @@ To log in, add /login to the url and enter one set of credentials shown below. T
 
 ![homepage](https://github.com/cperacchio/fsnd-capstone/blob/main/static/img/new_landing_page.png?raw=true)
 
+#### System architecture
+The diagram below illustrates how the different components of the Movie Casting App interact.
+
+![Movie Casting App Architecture](images/movie_casting_architecture.jpeg)
+
+Each color represents a different type of operation flowing through the system:
+- Green: Create operations
+- Yellow: Read operations
+- Blue: Update operations
+- Red: Delete operations
+
+The diagram shows how Auth0 authentication, user roles, API endpoints, and database operations work together to enable secure movie and actor management.
+
 ## Skills covered
 - Coding in Python 3
 - Relational database architecture
