@@ -20,7 +20,7 @@ To log in, add /login to the url and enter one set of credentials shown below. T
 ![homepage](https://github.com/cperacchio/fsnd-capstone/blob/main/static/img/new_landing_page.png?raw=true)
 
 #### System architecture
-The diagram below illustrates how the different components of the Movie Casting App interact.
+The diagram below illustrates how the different components of this app interact.
 
 ![Movie Casting App Architecture](images/movie_casting_architecture.jpg)
 
